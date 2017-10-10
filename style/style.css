@@ -1,0 +1,22 @@
+body {
+    background-color: #f9f9f9;
+}
+
+.panel {
+    background-color: #e8e8e8;
+    padding-bottom: 10px;
+    border-radius: .3rem;
+}
+
+.page {
+    width: 95%;
+    margin-top: 10px;
+}
+
+.panel .divider {
+    border-color: #babcbf99;
+}
+
+.is-error {
+    color: #e85600;
+}
