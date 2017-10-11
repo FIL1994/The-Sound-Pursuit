@@ -6,10 +6,19 @@ require('babel-polyfill');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
+import ReduxThunk from 'redux-thunk';
+import ReduxPromise from 'redux-promise';
 
 import App from './App';
+import reducers from './reducers';
+
+//const createStoreWithMiddleware = applyMiddleware(ReduxPromise, ReduxThunk)(createStore);
+//createStoreWithMiddleware(reducers)
+const store = createStore(reducers, applyMiddleware(ReduxThunk));
 
 ReactDOM.render(
-  <App/>,
+  <Provider store={store}><App/></Provider>,
   document.getElementById('root')
 );

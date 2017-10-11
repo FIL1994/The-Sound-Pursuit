@@ -20,3 +20,8 @@ body {
 .is-error {
     color: #e85600;
 }
+
+.skill-number {
+    margin-left: 8px;
+    margin-right: 8px;
+}

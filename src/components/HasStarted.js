@@ -5,12 +5,13 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 import _ from 'lodash';
+import localForage, {BAND} from '../data/localForage';
 
 class HasStarted extends Component {
   constructor(props) {
     super(props);
 
-    localforage.getItem('band_name', (err, value) => {
+    localForage.getItem(BAND, (err, value) => {
       if(err){
         console.log("Local Forage Error", err);
       }

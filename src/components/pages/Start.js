@@ -3,11 +3,15 @@
  * @date 2017-10-07.
  */
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import $ from 'jquery';
 import _ from 'lodash';
+
 import INSTRUMENTS from '../../data/instruments';
+import getRandomBandName from '../../data/randomBandName';
 import getRandomName from '../../data/names';
 import generateBandMember from '../../data/generateBandMember';
+import {createBand} from '../../actions';
 
 class Start extends Component {
   constructor(props) {
@@ -29,7 +33,13 @@ class Start extends Component {
       members: this.generateBandMembers(),
       bandName: null,
       yourName: null,
-      instrument: null
+      instrument: null,
+      skills: {
+        live: 0,
+        musicianship: 0,
+        songwriting: 0,
+        studio: 0
+      }
     };
 
     this.validateBandName = this.validateBandName.bind(this);
@@ -94,25 +104,65 @@ class Start extends Component {
   }
 
   renderForm() {
-    const {step, error, points} = this.state;
+    const {step, error, points, skills} = this.state;
 
     const renderSkills = () => {
       return this.skillNames.map((skill, index) => {
-          return[
-            <div key={`${index}A`} className="col-6 text-left">
-              <strong className="text-capitalize">{`${skill}: `}</strong>
-            </div>,
-            <div key={`${index}B`} className="col-6">
-              <button className="btn btn-action" type="button" disabled tabIndex="-1">
-                <i className="icon icon-minus"/>
-              </button>
-              {` 0 `}
-              <button className="btn btn-action" type="button">
-                <i className="icon icon-plus"/>
-              </button>
-            </div>
-          ];
-        });
+        let btnMinusProps = {}, btnPlusProps = {};
+        if(skills[skill] < 1) {
+          btnMinusProps.disabled = true;
+          btnMinusProps.tabIndex = "-1";
+        }
+        if(points < 1) {
+          btnPlusProps.disabled = true;
+          btnPlusProps.tabIndex = "-1";
+        }
+
+        return[
+          <div key={`${index}A`} className="col-6 text-left">
+            <strong className="text-capitalize">{`${skill}: `}</strong>
+          </div>,
+          <div key={`${index}B`} className="col-6">
+            <button className="btn btn-action" type="button" {...btnMinusProps}
+              onClick={() => {
+                if(skills[skill] > 0) {
+                  let newSkills = _.cloneDeep(skills);
+
+                  newSkills[skill]--;
+
+                  this.setState({
+                    points: points + 1,
+                    skills: newSkills
+                  })
+                } else {
+                  console.log(`ERROR - tried to minus skill (${skill}) when it was 0`);
+                }
+              }}
+            >
+              <i className="icon icon-minus"/>
+            </button>
+            <span className="skill-number">{skills[skill]}</span>
+            <button className="btn btn-action" type="button" {...btnPlusProps}
+              onClick={() => {
+                if(points > 0) {
+                  let newSkills = _.cloneDeep(skills);
+
+                  newSkills[skill]++;
+
+                  this.setState({
+                    points: points - 1,
+                    skills: newSkills
+                  })
+                } else {
+                  console.log(`ERROR - tried to plus skill (${skill}) when out of points`);
+                }
+              }}
+            >
+              <i className="icon icon-plus"/>
+            </button>
+          </div>
+        ];
+      });
     };
 
     switch(step) {
@@ -131,7 +181,7 @@ class Start extends Component {
                   <button
                     type="button"
                     className="btn btn-lg input-group-btn"
-                    onClick={() => $('#txtBandName').val(getRandomName)}
+                    onClick={() => $('#txtBandName').val(getRandomBandName())}
                   >
                     Random
                   </button>
@@ -161,7 +211,7 @@ class Start extends Component {
                   <button
                     type="button"
                     className="btn btn-lg input-group-btn"
-                    onClick={() => $('#txtYourName').val(getRandomName)}
+                    onClick={() => $('#txtYourName').val(getRandomName())}
                   >
                     Random
                   </button>
@@ -222,81 +272,89 @@ class Start extends Component {
 
         const popoverClass = "popover popover-top col-3";
 
-        const radioVocals = <div className={`form-group columns ${!_.isEmpty(error.vocals) ? 'has-error' : ''}`}>
-          <label className="form-label col-3"><strong>Vocals: </strong></label>
-          {
-            vocalists.map((m, index) => {
-              return (
-                <div className={popoverClass} key={`vocals-${index}`}>
-                  <label className="form-radio">
-                    <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.VOCALS}/>
-                    <i className="form-icon"/> {m.name}
-                  </label>
-                  {this.renderPopover(m)}
-                </div>
-              );
-            })
-          }
+        const radioVocals = <div>
+          <div className={`form-group columns ${!_.isEmpty(error.vocals) ? 'has-error' : ''}`}>
+            <label className="form-label col-3"><strong>Vocals: </strong></label>
+            {
+              vocalists.map((m, index) => {
+                return (
+                  <div className={popoverClass} key={`vocals-${index}`}>
+                    <label className="form-radio">
+                      <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.VOCALS}/>
+                      <i className="form-icon"/> {m.name}
+                    </label>
+                    {this.renderPopover(m)}
+                  </div>
+                );
+              })
+            }
+          </div>
           <div className="text-center">
             <p className="is-error">{error.vocals}</p>
           </div>
         </div>;
 
-        const radioGuitar = <div className={`form-group columns ${!_.isEmpty(error.guitar) ? 'has-error' : ''}`}>
-          <label className="form-label col-3"><strong>Guitar: </strong></label>
-          {
-            guitarists.map((m, index) => {
-              return (
-                <div className={popoverClass} key={`guitar-${index}`}>
-                  <label className="form-radio">
-                    <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.GUITAR}/>
-                    <i className="form-icon"/> {m.name}
-                  </label>
-                  {this.renderPopover(m)}
-                </div>
-              );
-            })
-          }
+        const radioGuitar = <div>
+          <div className={`form-group columns ${!_.isEmpty(error.guitar) ? 'has-error' : ''}`}>
+            <label className="form-label col-3"><strong>Guitar: </strong></label>
+            {
+              guitarists.map((m, index) => {
+                return (
+                  <div className={popoverClass} key={`guitar-${index}`}>
+                    <label className="form-radio">
+                      <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.GUITAR}/>
+                      <i className="form-icon"/> {m.name}
+                    </label>
+                    {this.renderPopover(m)}
+                  </div>
+                );
+              })
+            }
+          </div>
           <div className="text-center">
             <p className="is-error">{error.guitar}</p>
           </div>
         </div>;
 
-        const radioBass = <div className={`form-group columns ${!_.isEmpty(error.bass) ? 'has-error' : ''}`}>
-          <label className="form-label col-3"><strong>Bass: </strong></label>
-          {
-            bassists.map((m, index) => {
-              return (
-                <div className={popoverClass} key={`bass-${index}`}>
-                  <label className="form-radio">
-                    <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.BASS}/>
-                    <i className="form-icon"/> {m.name}
-                  </label>
-                  {this.renderPopover(m)}
-                </div>
-              );
-            })
-          }
+        const radioBass = <div>
+          <div className={`form-group columns ${!_.isEmpty(error.bass) ? 'has-error' : ''}`}>
+            <label className="form-label col-3"><strong>Bass: </strong></label>
+            {
+              bassists.map((m, index) => {
+                return (
+                  <div className={popoverClass} key={`bass-${index}`}>
+                    <label className="form-radio">
+                      <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.BASS}/>
+                      <i className="form-icon"/> {m.name}
+                    </label>
+                    {this.renderPopover(m)}
+                  </div>
+                );
+              })
+            }
+          </div>
           <div className="text-center">
             <p className="is-error">{error.bass}</p>
           </div>
         </div>;
 
-        const radioDrums = <div className={`form-group columns ${!_.isEmpty(error.drums) ? 'has-error' : ''}`}>
-          <label className="form-label col-3"><strong>Drums: </strong></label>
-          {
-            drummers.map((m, index) => {
-              return (
-                <div className={popoverClass} key={`drums-${index}`}>
-                  <label className="form-radio">
-                    <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.DRUMS}/>
-                    <i className="form-icon"/> {m.name}
-                  </label>
-                  {this.renderPopover(m)}
-                </div>
-              );
-            })
-          }
+        const radioDrums = <div>
+          <div className={`form-group columns ${!_.isEmpty(error.drums) ? 'has-error' : ''}`}>
+            <label className="form-label col-3"><strong>Drums: </strong></label>
+            {
+              drummers.map((m, index) => {
+                return (
+                  <div className={popoverClass} key={`drums-${index}`}>
+                    <label className="form-radio">
+                      <input type="radio" value={JSON.stringify(m)} name={INSTRUMENTS.DRUMS}/>
+                      <i className="form-icon"/> {m.name}
+                    </label>
+                    {this.renderPopover(m)}
+                  </div>
+                );
+              })
+            }
+          </div>
           <div className="text-center">
             <p className="is-error">{error.drums}</p>
           </div>
@@ -353,6 +411,7 @@ class Start extends Component {
   validateCreate(e) {
     e.preventDefault();
 
+    let {points} = this.state;
     let yourName = $('#txtYourName').val();
     let instrument = $('input[name=instrument]:checked').val();
     let error = _.cloneDeep(this.state.error);
@@ -374,8 +433,14 @@ class Start extends Component {
       error.instrument = null;
     }
 
-    let step = this.state.step;
-    if(_.isEmpty(error.yourName) && _.isEmpty(error.instrument)) {
+    if(points > 0) {
+      error.points = "You must spend all of your points";
+    } else {
+      error.points = null;
+    }
+
+    let step = _.cloneDeep(this.state.step);
+    if(_.isEmpty(error.yourName) && _.isEmpty(error.instrument) && _.isEmpty(error.points)) {
       step++;
       $('#txtBandName').val('');
     }
@@ -390,7 +455,7 @@ class Start extends Component {
 
   validateBandMembers(e) {
     e.preventDefault();
-    const {instrument} = this.state;
+    const {yourName, instrument, skills} = this.state;
     let error = _.cloneDeep(this.state.error);
 
     error.vocals = null; error.guitar = null; error.bass = null; error.drums = null;
@@ -401,13 +466,13 @@ class Start extends Component {
     let drums = $(`input[name=${INSTRUMENTS.DRUMS}]:checked`).val();
 
     if(instrument === INSTRUMENTS.VOCALS) {
-      vocals = {name: this.state.yourName, instrument};
+      vocals = {name: yourName, instrument, skills};
     } else if(instrument === INSTRUMENTS.GUITAR) {
-      guitar = {name: this.state.yourName, instrument};
+      guitar = {name: yourName, instrument, skills};
     } else if(instrument === INSTRUMENTS.BASS) {
-      bass = {name: this.state.yourName, instrument};
+      bass = {name: yourName, instrument, skills};
     } else if(instrument === INSTRUMENTS.DRUMS) {
-      drums = {name: this.state.yourName, instrument};
+      drums = {name: yourName, instrument, skills};
     }
 
     if(_.isEmpty(vocals)) {
@@ -423,14 +488,59 @@ class Start extends Component {
       error.drums = "You must select a drummer";
     }
 
+    let step = _.cloneDeep(this.state.step);
     if(_.isEmpty(error.vocals) && _.isEmpty(error.guitar) && _.isEmpty(error.bass) && _.isEmpty(error.drums)) {
-      try { vocals = JSON.parse(vocals); } catch(e){}
-      try { guitar = JSON.parse(guitar); } catch(e){}
-      try { bass = JSON.parse(bass); } catch(e){}
-      try { drums = JSON.parse(drums); } catch(e){}
+      let members = [], leadMember = {};
+
+      if(instrument !== INSTRUMENTS.VOCALS) {
+        try {
+          vocals = JSON.parse(vocals);
+          members.push(vocals);
+        } catch(e){}
+      } else {
+        leadMember = vocals;
+      }
+      if(instrument !== INSTRUMENTS.GUITAR) {
+        try {
+          guitar = JSON.parse(guitar);
+          members.push(guitar);
+        } catch(e){}
+      } else {
+        leadMember = guitar;
+      }
+      if(instrument !== INSTRUMENTS.BASS) {
+        try {
+          bass = JSON.parse(bass);
+          members.push(bass);
+        } catch(e){}
+      } else {
+        leadMember = bass;
+      }
+      if(instrument !== INSTRUMENTS.DRUMS) {
+        try {
+          drums = JSON.parse(drums);
+          members.push(drums);
+        } catch(e){}
+      } else {
+        leadMember = drums;
+      }
+
+      console.log(
+        "CREATE BAND",
+        this.props.createBand({
+          name: this.state.bandName,
+          members,
+          leadMember
+        })
+      );
+
+      step++;
     }
 
-    console.log(vocals, guitar, bass, drums, instrument, error);
+    this.setState({
+      error,
+      step
+    });
   }
 
   render() {
@@ -454,4 +564,4 @@ class Start extends Component {
   }
 }
 
-export default Start;
+export default connect(null, {createBand})(Start);

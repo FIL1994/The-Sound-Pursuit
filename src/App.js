@@ -10,6 +10,7 @@ import HeaderNav from './components/HeaderNav';
 import Home from './components/pages/Home';
 import Members from './components/pages/Members';
 import Start from './components/pages/Start';
+import Songs from './components/pages/Songs';
 
 class App extends Component {
   render() {
@@ -19,9 +20,10 @@ class App extends Component {
           <HasStarted/>
           <HeaderNav/>
           <Switch>
+            <Route path="/start/" component={Start}/>
             <Route exact path="/" component={Home}/>
             <Route path="/members/" component={Members}/>
-            <Route exact path="/start/" component={Start}/>
+            <Route path="/songs/" component={Songs}/>
             <Redirect to="/"/>
           </Switch>
         </div>
