@@ -4,6 +4,7 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import $ from 'jquery';
 import _ from 'lodash';
 
@@ -376,6 +377,9 @@ class Start extends Component {
             </button>
           </form>
         );
+      case 3:
+        this.props.history.push('/');
+        break;
     }
   }
 
@@ -526,7 +530,7 @@ class Start extends Component {
       }
 
       console.log(
-        "CREATE BAND",
+        "CREATE DATA_BAND",
         this.props.createBand({
           name: this.state.bandName,
           members,
@@ -564,4 +568,4 @@ class Start extends Component {
   }
 }
 
-export default connect(null, {createBand})(Start);
+export default withRouter(connect(null, {createBand})(Start));

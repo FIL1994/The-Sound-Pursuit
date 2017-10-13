@@ -17,10 +17,7 @@ class HeaderNav extends Component {
       return false
     }
     window.match.push({match, location});
-    if(match.url === "/" && !match.isExact){
-      return false;
-    }
-    return true;
+    return !(match.url === "/" && !match.isExact);
   }
 
   renderLinks() {
@@ -51,6 +48,15 @@ class HeaderNav extends Component {
         isActive={this.isLinkActive}
       >
         Songs
+      </NavLink>,
+      <NavLink
+        key="tour"
+        to="/tour"
+        className="btn btn-lg"
+        activeClassName="btn-primary"
+        isActive={this.isLinkActive}
+      >
+        Tour
       </NavLink>
     ];
   }
@@ -67,7 +73,10 @@ class HeaderNav extends Component {
         <section className="navbar-section">
           {isMatch ? <a className="btn btn-lg">Home</a> : this.renderLinks()}
         </section>
-        <section/>{/* remove to put nav on right side */}
+        <section className="navbar section text-light">
+          <h6 className="centered p-2">$250</h6>
+          <h6 className="centered p-2">Week 0</h6>
+        </section>
       </header>
     );
   }

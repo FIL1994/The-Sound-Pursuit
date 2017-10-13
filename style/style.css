@@ -2,12 +2,6 @@ body {
     background-color: #f9f9f9;
 }
 
-.panel {
-    background-color: #e8e8e8;
-    padding-bottom: 10px;
-    border-radius: .3rem;
-}
-
 .page {
     width: 95%;
     margin-top: 10px;
@@ -17,11 +11,31 @@ body {
     border-color: #babcbf99;
 }
 
+.skill-number {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.scrollable {
+    overflow-y: scroll;
+    height: 450px;
+}
+
+/*Overrides*/
 .is-error {
     color: #e85600;
 }
 
-.skill-number {
-    margin-left: 8px;
-    margin-right: 8px;
+.panel {
+    background-color: #e8e8e8;
+    padding-bottom: 10px;
+    border-radius: .3rem;
+}
+
+.table.table-striped tbody tr:nth-of-type(2n+1) {
+    background-color: #edeeef;
+}
+
+.table.table-hover tbody tr:hover {
+    background-color: #e0e1e2;
 }

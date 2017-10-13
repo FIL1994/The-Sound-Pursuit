@@ -23,36 +23,49 @@ class Home extends Component {
     members.unshift(leadMember);
 
     return(
-      <div>
-        <ul>
-          {
-            members.map((m, index) => {
-              return(
-                <li key={index}>
-                  {m.name} - {m.instrument}
-                </li>
-              );
-            })
-          }
-        </ul>
-      </div>
+      <ul>
+        {
+          members.map((m, index) => {
+            return(
+              <li key={index} className="tile">
+                <div className="tile-content">
+                  <strong className="tile-title">{m.name} - <span className="text-capitalize">{m.instrument}</span></strong>
+                  <p className="tile-subtitle">
+                    Live: {m.skills.live} |
+                    Musicianship: {m.skills.musicianship} |
+                    Studio: {m.skills.studio} |
+                    Songwriting: {m.skills.songwriting}
+                  </p>
+                  <div className="col-6 centered divider"/>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ul>
     );
   }
 
   render() {
     const {band} = this.props;
-    // console.log("Home - BAND", band);
+    // console.log("Home - DATA_BAND", band);
 
     return(
       <div className="page container">
         {
           _.isEmpty(band) ? null :
-          <div>
-            <h3 className="text-center">{band.name}</h3>
-            <Link to="/members">
-            Members
-            </Link>
+          <div className="text-center">
+            <h3>{band.name}</h3>
             <div className="divider"/>
+            <div className="centered text-center">
+              <button type="button" className="btn">
+                Play Show
+              </button>
+              <button type="button" className="btn">
+                Practice
+              </button>
+            </div>
+            <br/>
             {this.renderMembers()}
           </div>
         }

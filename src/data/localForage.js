@@ -10,8 +10,9 @@ localForage.config({
 });
 
 // For Testing Only
-// window.localForage = localForage;
+window.localForage = localForage;
 
 export default localForage;
 
-export const BAND = "band";
+export const DATA_BAND = "band";
+export const DATA_SONGS = "songs";

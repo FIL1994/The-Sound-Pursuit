@@ -4,8 +4,10 @@
  */
 import {combineReducers} from 'redux';
 import bandReducer from './bandReducer';
+import songsReducer from './songsReducer';
 
 export default combineReducers({
   state: (state = {}) => state,
-  band: bandReducer
+  band: bandReducer,
+  songs: songsReducer
 });

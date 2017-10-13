@@ -11,7 +11,7 @@ export default function (state = {}, action) {
     case GET_BAND:
       return action.payload;
     case ERROR_BAND:
-      console.log("BAND ERROR", action.error);
+      console.log("DATA_BAND ERROR", action.error);
       return state;
     default:
       return state;
