@@ -12,7 +12,7 @@ import INSTRUMENTS from '../../data/instruments';
 import getRandomBandName from '../../data/randomBandName';
 import getRandomName from '../../data/names';
 import generateBandMember from '../../data/generateBandMember';
-import {createBand} from '../../actions';
+import {saveBand} from '../../actions';
 
 class Start extends Component {
   constructor(props) {
@@ -531,11 +531,12 @@ class Start extends Component {
 
       console.log(
         "CREATE DATA_BAND",
-        this.props.createBand({
+        this.props.saveBand({
           name: this.state.bandName,
           members,
           leadMember,
-          practices: 0
+          practices: 0,
+          practicesToLevelUp: 1
         })
       );
 
@@ -569,4 +570,4 @@ class Start extends Component {
   }
 }
 
-export default withRouter(connect(null, {createBand})(Start));
+export default withRouter(connect(null, {saveBand})(Start));

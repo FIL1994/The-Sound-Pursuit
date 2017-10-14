@@ -2,6 +2,10 @@ body {
     background-color: #f9f9f9;
 }
 
+.left-space-1 {
+    margin-left: .15rem;
+}
+
 .page {
     width: 95%;
     margin-top: 10px;

@@ -12,7 +12,9 @@ class HeaderNav extends Component {
   constructor(props){
     super(props);
     this.isLinkActive = this.isLinkActive.bind(this);
+  }
 
+  componentWillMount() {
     this.props.getCash();
     this.props.getFans();
     this.props.getWeek();
@@ -63,7 +65,9 @@ class HeaderNav extends Component {
         <section className="navbar section text-light">
           <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip="Fans">
             <i className="icon icon-people"/>
-            {_.isNumber(this.props.fans) ? this.props.fans : <div className="loading"/>}
+            <span className="left-space-1">
+              {_.isNumber(this.props.fans) ? this.props.fans : <div className="loading"/>}
+            </span>
           </h6>
           <h6 className="centered p-2">
             {_.isNumber(this.props.cash) ? `$${this.props.cash}` : <div className="loading"/>}

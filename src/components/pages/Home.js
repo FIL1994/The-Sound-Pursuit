@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 
-import {getBand, getFans, getCash, getWeek, nextWeek} from '../../actions';
+import {getBand, saveBand, getFans, addFans, getCash, addCash, getWeek, nextWeek} from '../../actions';
 
 class Home extends Component {
   constructor(props) {
@@ -16,6 +16,15 @@ class Home extends Component {
     this.playShow = this.playShow.bind(this);
     this.practice = this.practice.bind(this);
 
+    this.state = {
+      showShow: false,
+      showPractice: false,
+      newFans: null,
+      newCash: null
+    };
+  }
+
+  componentWillMount() {
     this.props.getBand();
     this.props.getCash();
     this.props.getFans();
@@ -23,11 +32,77 @@ class Home extends Component {
   }
 
   playShow() {
+    const {leadMember, members: m} = this.props.band;
+    const members = [leadMember, ...m];
 
+    let maxSkill = 0, sumSkill = 0, avgSkill;
+
+    members.forEach(({skills: {live, musicianship}}) => {
+      const skill = (live * 3) + musicianship;
+      if(skill > maxSkill) {
+        maxSkill = skill;
+      }
+      sumSkill += skill;
+    });
+    avgSkill = sumSkill / members.length;
+
+    const performance = Number((_.random(avgSkill, maxSkill) * _.random(0.8, 1.2)).toFixed(2));
+
+    const newFans = _.ceil(performance * 0.75);
+    const newCash = Number((performance * 1.05).toFixed(2));
+    this.props.addFans(newFans);
+    this.props.addCash(newCash);
+
+    this.setState({
+      showShow: true,
+      newFans,
+      newCash
+    });
+
+    setTimeout(() => {
+      this.setState({
+        showShow: false,
+        newFans: null,
+        newCash: null
+      })
+    }, 3500);
   }
 
   practice() {
+    let {leadMember, members, practices, practicesToLevelUp} = this.props.band;
 
+    practices++;
+    if(practices >= practicesToLevelUp) {
+      practicesToLevelUp = practicesToLevelUp + _.ceil(practices/10);
+      // increment value but only allow a maximum of 100
+      function incrementMax100(val) {
+        return _.min([val+1, 100]);
+      }
+      // Increase members' and lead member's skills
+      members = members.map((m) => {
+        let {skills: {live, musicianship, songwriting, studio}} = m;
+
+        live = incrementMax100(live);
+        musicianship = incrementMax100(musicianship);
+        songwriting = incrementMax100(songwriting);
+        studio = incrementMax100(studio);
+
+        return {...m, skills: {live, musicianship, songwriting, studio}};
+      });
+      leadMember.skills.live = incrementMax100(leadMember.skills.live);
+      leadMember.skills.musicianship = incrementMax100(leadMember.skills.musicianship);
+      leadMember.skills.songwriting = incrementMax100(leadMember.skills.songwriting);
+      leadMember.skills.studio = incrementMax100(leadMember.skills.studio);
+
+      console.log("Level Up");
+    } else {
+      console.log("Did not level up");
+    }
+
+    this.props.saveBand({...this.props.band, leadMember, members, practices, practicesToLevelUp});
+
+    console.log("Band", this.props.band);
+    console.log("Members", members, leadMember);
   }
 
   renderMembers() {
@@ -59,6 +134,7 @@ class Home extends Component {
 
   render() {
     const {band} = this.props;
+    const {showShow, showPractice, newFans, newCash} = this.state;
 
     return(
       <div className="page container">
@@ -76,11 +152,16 @@ class Home extends Component {
                   Practice
                 </button>
               </div>
+              <div className="centered col-3">
+                {
+                  !showShow ? null :
+                  <div className="toast">
+                    New Fans: {newFans} | Cash: ${newCash}
+                  </div>
+                }
+              </div>
             </div>
             <br/>
-            <div>
-              Fans: {this.props.fans}
-            </div>
             {this.renderMembers()}
           </div>
         }
@@ -99,4 +180,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {getBand, getFans, getCash, getWeek, nextWeek})(Home);
+export default connect(mapStateToProps, {getBand, saveBand, getFans, getCash, getWeek, addFans, addCash, nextWeek})(Home);

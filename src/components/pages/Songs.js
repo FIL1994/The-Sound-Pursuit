@@ -21,7 +21,9 @@ class Songs extends Component {
     this.editSongSubmit = this.editSongSubmit.bind(this);
     this.renderModalEditSong = this.renderModalEditSong.bind(this);
     // this.renderEmpty = this.renderEmpty.bind(this);
+  }
 
+  componentWillMount() {
     this.props.getBand();
     this.props.getSongs();
   }

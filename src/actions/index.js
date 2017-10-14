@@ -3,9 +3,11 @@
  * @date 2017-10-10.
  */
 import _ from 'lodash';
-import {CREATE_BAND, GET_BAND, ERROR_BAND, GET_SONGS, ERROR_SONG, SAVE_SONGS,
+import {SAVE_BAND, GET_BAND, ERROR_BAND, GET_SONGS, ERROR_SONG, SAVE_SONGS,
   SAVE_CASH, GET_CASH, ERROR_CASH, SAVE_WEEK, GET_WEEK, ERROR_WEEK, GET_FANS, SAVE_FANS, ERROR_FANS} from './types';
 import localForage, {DATA_BAND, DATA_SONGS, DATA_CASH, DATA_WEEK, DATA_FANS} from '../data/localForage';
+
+const defaultCash = 250;
 
 function sendReturn({type, payload, error}) {
   return {
@@ -16,14 +18,14 @@ function sendReturn({type, payload, error}) {
 }
 
 // START BAND
-export function createBand(band) {
+export function saveBand(band) {
   return dispatch => {
     return localForage.setItem(DATA_BAND, band).then(
       (val, error) => {
         if(error) {
           dispatch(sendReturn({type: ERROR_BAND, error}));
         } else {
-          dispatch(sendReturn({type: CREATE_BAND, payload: val}));
+          dispatch(sendReturn({type: SAVE_BAND, payload: val}));
         }
       }
     );
@@ -230,11 +232,26 @@ export function saveFans(fans) {
     );
   };
 }
+
+export function addFans(newFans) {
+  return dispatch => {
+    return localForage.getItem(DATA_FANS).then(
+      (val, error) => {
+        if(error) {
+          dispatch(sendReturn({type: ERROR_FANS, error}));
+        } else {
+          val = _.defaultTo(Number(val), 0);
+          newFans = _.ceil(val + _.defaultTo(Number(newFans), 1));
+          dispatch(saveFans(newFans));
+        }
+      }
+    );
+  }
+}
 // END FANS
 
 // START CASH
 export function getCash() {
-  const defaultCash = 250;
   return dispatch => {
     return localForage.getItem(DATA_CASH).then(
       (val, error) => {
@@ -269,6 +286,30 @@ export function saveCash(cash) {
         }
         else {
           dispatch(sendReturn({type: SAVE_CASH, payload: val}));
+        }
+      }
+    );
+  };
+}
+
+export function addCash(newCash) {
+  return dispatch => {
+    return localForage.getItem(DATA_CASH).then(
+      (val, error) => {
+        if(error) {
+          dispatch(sendReturn({type: ERROR_CASH, error}));
+        } else {
+          // if val is NaN set val to default cash
+          val = !_.isNaN(val) ? val : defaultCash;
+          // if val (as a string) is not more than 0 character set val to default cash
+          val = _.toString(val).length > 0 ? val : defaultCash;
+          // if val is not a finite number set val to default cash
+          val = _.isFinite(val) ? val : defaultCash;
+
+          newCash = Number(newCash);
+          val = Number((val + newCash).toFixed(2));
+
+          dispatch(saveCash(val));
         }
       }
     );
