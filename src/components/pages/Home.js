@@ -18,9 +18,10 @@ class Home extends Component {
 
     this.state = {
       showShow: false,
-      showPractice: false,
       newFans: null,
-      newCash: null
+      newCash: null,
+      showPractice: false,
+      practiceToast: null
     };
   }
 
@@ -52,6 +53,7 @@ class Home extends Component {
     const newCash = Number((performance * 1.05).toFixed(2));
     this.props.addFans(newFans);
     this.props.addCash(newCash);
+    this.props.nextWeek();
 
     this.setState({
       showShow: true,
@@ -70,6 +72,7 @@ class Home extends Component {
 
   practice() {
     let {leadMember, members, practices, practicesToLevelUp} = this.props.band;
+    let practiceToast;
 
     practices++;
     if(practices >= practicesToLevelUp) {
@@ -94,15 +97,25 @@ class Home extends Component {
       leadMember.skills.songwriting = incrementMax100(leadMember.skills.songwriting);
       leadMember.skills.studio = incrementMax100(leadMember.skills.studio);
 
-      console.log("Level Up");
+      practiceToast = <span>Leveled Up!</span>;
     } else {
-      console.log("Did not level up");
+      practiceToast = <span>{((practices / practicesToLevelUp) * 100).toFixed()}%</span>;
     }
 
     this.props.saveBand({...this.props.band, leadMember, members, practices, practicesToLevelUp});
+    this.props.nextWeek();
 
-    console.log("Band", this.props.band);
-    console.log("Members", members, leadMember);
+    this.setState({
+      showPractice: true,
+      practiceToast
+    });
+
+    setTimeout(() => {
+      this.setState({
+        showPractice: false,
+        practiceToast: null
+      })
+    }, 3500);
   }
 
   renderMembers() {
@@ -134,7 +147,7 @@ class Home extends Component {
 
   render() {
     const {band} = this.props;
-    const {showShow, showPractice, newFans, newCash} = this.state;
+    const {showShow, showPractice, newFans, newCash, practiceToast} = this.state;
 
     return(
       <div className="page container">
@@ -156,8 +169,14 @@ class Home extends Component {
                 {
                   !showShow ? null :
                   <div className="toast">
-                    New Fans: {newFans} | Cash: ${newCash}
+                    <span>New Fans: {newFans} | Cash: ${newCash}</span>
                   </div>
+                }
+                {
+                  !showPractice ? null :
+                    <div className="toast">
+                      {practiceToast}
+                    </div>
                 }
               </div>
             </div>
