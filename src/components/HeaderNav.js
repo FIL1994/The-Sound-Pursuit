@@ -3,20 +3,25 @@
  * @date 2017-10-07.
  */
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {NavLink, matchPath, withRouter} from 'react-router-dom';
+import _ from 'lodash';
+import {getFans, getCash, getWeek} from '../actions';
 
 class HeaderNav extends Component {
   constructor(props){
     super(props);
     this.isLinkActive = this.isLinkActive.bind(this);
-    window.match = [];
+
+    this.props.getCash();
+    this.props.getFans();
+    this.props.getWeek();
   }
 
-  isLinkActive(match, location) {
+  isLinkActive(match) {
     if(!match) {
       return false
     }
-    window.match.push({match, location});
     return !(match.url === "/" && !match.isExact);
   }
 
@@ -32,15 +37,6 @@ class HeaderNav extends Component {
         Home
       </NavLink>,
       <NavLink
-        key="members"
-        to="/members"
-        className="btn btn-lg"
-        activeClassName="btn-primary"
-        isActive={this.isLinkActive}
-      >
-        Members
-      </NavLink>,
-      <NavLink
         key="songs"
         to="/songs"
         className="btn btn-lg"
@@ -48,15 +44,6 @@ class HeaderNav extends Component {
         isActive={this.isLinkActive}
       >
         Songs
-      </NavLink>,
-      <NavLink
-        key="tour"
-        to="/tour"
-        className="btn btn-lg"
-        activeClassName="btn-primary"
-        isActive={this.isLinkActive}
-      >
-        Tour
       </NavLink>
     ];
   }
@@ -74,12 +61,28 @@ class HeaderNav extends Component {
           {isMatch ? <a className="btn btn-lg">Home</a> : this.renderLinks()}
         </section>
         <section className="navbar section text-light">
-          <h6 className="centered p-2">$250</h6>
-          <h6 className="centered p-2">Week 0</h6>
+          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip="Fans">
+            <i className="icon icon-people"/>
+            {_.isNumber(this.props.fans) ? this.props.fans : <div className="loading"/>}
+          </h6>
+          <h6 className="centered p-2">
+            {_.isNumber(this.props.cash) ? `$${this.props.cash}` : <div className="loading"/>}
+          </h6>
+          <h6 className="centered p-2">
+            {_.isNumber(this.props.week) ? `Week ${this.props.week}` : <div className="loading"/>}
+          </h6>
         </section>
       </header>
     );
   }
 }
 
-export default withRouter(HeaderNav);
+function mapStateToProps(state) {
+  return {
+    week: state.week,
+    cash: state.cash,
+    fans: state.fans
+  };
+}
+
+export default withRouter(connect(mapStateToProps, {getFans, getCash, getWeek})(HeaderNav));

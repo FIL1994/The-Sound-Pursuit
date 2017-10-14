@@ -216,7 +216,11 @@ class Songs extends Component {
     return(
       <div className="page container" id="page-songs">
         <div className="centered text-center">
-          <a href="#modal-write-song" className="btn btn-lg btn-primary">Write Song</a>
+          <div className="btn-group btn-group-block centered col-2">
+            <a href="#modal-write-song" className="btn btn-lg btn-primary">
+              Write Song
+            </a>
+          </div>
           {this.renderModalWriteSong()}
           {this.renderModalEditSong()}
         </div>

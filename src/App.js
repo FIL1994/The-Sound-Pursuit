@@ -8,10 +8,8 @@ import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import HasStarted from './components/HasStarted';
 import HeaderNav from './components/HeaderNav';
 import Home from './components/pages/Home';
-import Members from './components/pages/Members';
 import Start from './components/pages/Start';
 import Songs from './components/pages/Songs';
-import Tour from './components/pages/Tour';
 
 class App extends Component {
   render() {
@@ -23,9 +21,7 @@ class App extends Component {
           <Switch>
             <Route path="/start/" component={Start}/>
             <Route exact path="/" component={Home}/>
-            <Route path="/members/" component={Members}/>
             <Route path="/songs/" component={Songs}/>
-            <Route path="/tour/" component={Tour}/>
             <Redirect to="/"/>
           </Switch>
         </div>

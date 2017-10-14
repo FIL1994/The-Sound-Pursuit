@@ -534,7 +534,8 @@ class Start extends Component {
         this.props.createBand({
           name: this.state.bandName,
           members,
-          leadMember
+          leadMember,
+          practices: 0
         })
       );
 

@@ -16,3 +16,6 @@ export default localForage;
 
 export const DATA_BAND = "band";
 export const DATA_SONGS = "songs";
+export const DATA_WEEK = "week";
+export const DATA_CASH = "cash";
+export const DATA_FANS = "fans";
