@@ -21,7 +21,9 @@ class Home extends Component {
       newFans: null,
       newCash: null,
       showPractice: false,
-      practiceToast: null
+      practiceToast: null,
+      lastPractice: 0,
+      lastShow: 0
     };
   }
 
@@ -55,19 +57,26 @@ class Home extends Component {
     this.props.addCash(newCash);
     this.props.nextWeek();
 
+    const lastShow = Date.now() / 1000;
+
     this.setState({
       showShow: true,
       newFans,
-      newCash
+      newCash,
+      lastShow
     });
 
     setTimeout(() => {
-      this.setState({
-        showShow: false,
-        newFans: null,
-        newCash: null
-      })
-    }, 3500);
+      const now = Date.now() / 1000;
+      if(now > this.state.lastShow + 2.9) {
+        this.setState({
+          showShow: false,
+          newFans: null,
+          newCash: null,
+          lastShow: Date.now() / 1000
+        });
+      }
+    }, 3000);
   }
 
   practice() {
@@ -99,23 +108,35 @@ class Home extends Component {
 
       practiceToast = <span>Leveled Up!</span>;
     } else {
-      practiceToast = <span>{((practices / practicesToLevelUp) * 100).toFixed()}%</span>;
+      practiceToast = <progress
+        className="progress"
+        value={_.ceil((practices / practicesToLevelUp) * 100)}
+        max="100"
+      />;
+        //<span>{((practices / practicesToLevelUp) * 100).toFixed()}% to next level</span>;
     }
 
     this.props.saveBand({...this.props.band, leadMember, members, practices, practicesToLevelUp});
     this.props.nextWeek();
 
+    const lastPractice = Date.now() / 1000;
+
     this.setState({
       showPractice: true,
-      practiceToast
+      practiceToast,
+      lastPractice
     });
 
     setTimeout(() => {
-      this.setState({
-        showPractice: false,
-        practiceToast: null
-      })
-    }, 3500);
+      const now = Date.now() / 1000;
+      if(now > this.state.lastPractice + 2.9) {
+        this.setState({
+          showPractice: false,
+          practiceToast: null,
+          lastPractice: Date.now() / 1000
+        });
+      }
+    }, 3000);
   }
 
   renderMembers() {

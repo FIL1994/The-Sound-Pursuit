@@ -46,6 +46,15 @@ class HeaderNav extends Component {
         isActive={this.isLinkActive}
       >
         Songs
+      </NavLink>,
+      <NavLink
+        key="records"
+        to="/records"
+        className="btn btn-lg"
+        activeClassName="btn-primary"
+        isActive={this.isLinkActive}
+      >
+        Records
       </NavLink>
     ];
   }
