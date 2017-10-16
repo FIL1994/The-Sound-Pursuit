@@ -555,9 +555,6 @@ class Start extends Component {
     return(
       <div className="page container">
         <div className="panel">
-          {/*<div className="panel-header">*/}
-            {/*<h2 className="panel-title text-center">Start {bandName !== null ? ` - ${bandName}` : null}</h2>*/}
-          {/*</div>*/}
           <div className="centered col-10 panel-body">
             {this.renderSteps()}
             <div className="divider"/>

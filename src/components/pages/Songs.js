@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import $ from 'jquery';
 import _ from 'lodash';
 import getRandomSongName from '../../data/randomSongName';
-import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong} from "../../actions";
+import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong, nextWeek} from '../../actions';
 import studios from '../../data/studios';
 
 class Songs extends Component {
@@ -31,6 +31,7 @@ class Songs extends Component {
   componentWillMount() {
     this.props.getBand();
     this.props.getSongs();
+    this.props.getCash();
   }
 
   writeSongSubmit() {
@@ -73,6 +74,7 @@ class Songs extends Component {
     };
 
     this.props.writeSong(song);
+    this.props.nextWeek();
   }
 
   editSongSubmit() {
@@ -109,7 +111,7 @@ class Songs extends Component {
     if(this.state.errorRecording) {
       return;
     }
-
+    let {cash} = this.props;
     let id, selectStudio = $('#selectStudio');
     let studioID = selectStudio.val();
     try {
@@ -122,6 +124,11 @@ class Songs extends Component {
       return;
     }
     const studio = studios[studioID];
+    if(studio.cost > cash) {
+      return;
+    } else {
+      cash -= studio.cost;
+    }
 
     const {songs, band: {leadMember, members}} = this.props;
 
@@ -149,7 +156,9 @@ class Songs extends Component {
     quality = Number(quality.toFixed(2));
     song.recording = quality;
 
+    this.props.saveCash(cash);
     this.props.updateSong(song);
+    this.props.nextWeek();
   }
 
   renderModalWriteSong() {
@@ -304,6 +313,10 @@ class Songs extends Component {
   }
 
   renderSongList(songs) {
+    songs = songs.filter(({single, album}) => {
+      return !(_.isNumber(single) || _.isNumber(album));
+    });
+
     return (
       <table className="table table-striped table-hover text-center">
         <thead>
@@ -393,4 +406,4 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {getBand, getCash, saveCash, getSongs, writeSong, updateSong,
-  deleteSong})(Songs);
+  deleteSong, nextWeek})(Songs);

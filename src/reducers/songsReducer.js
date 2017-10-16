@@ -9,7 +9,6 @@ export default function (state = {}, action) {
     case GET_SONGS:
       return action.payload;
     case SAVE_SONGS:
-      console.log("songs from songReducer", action.payload);
       return action.payload;
     case DELETE_SONG:
       return action.payload;
