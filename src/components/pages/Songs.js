@@ -173,7 +173,7 @@ class Songs extends Component {
           <div className="modal-body">
             <div className="content">
               <div className="form-group">
-                <div className="input-group">
+                <div className="input-group col-9">
                   <input id="txtSongName" className="form-input" placeholder="Song Name" type="text"/>
                   <button className="btn input-group-btn" type="button"
                     onClick={() => $('#txtSongName').val(getRandomSongName())}

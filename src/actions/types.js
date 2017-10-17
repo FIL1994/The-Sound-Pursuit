@@ -23,3 +23,11 @@ export const ERROR_CASH = 'error_cash';
 export const GET_FANS = 'get_fans';
 export const SAVE_FANS = 'save_fans';
 export const ERROR_FANS = 'error_fans';
+
+export const GET_SINGLES = 'get_singles';
+export const SAVE_SINGLES = 'save_singles';
+export const ERROR_SINGLES = 'error_singles';
+
+export const GET_ALBUMS = 'get_albums';
+export const SAVE_ALBUMS = 'save_albums';
+export const ERROR_ALBUMS = 'error_albums';

@@ -19,3 +19,5 @@ export const DATA_SONGS = "songs";
 export const DATA_WEEK = "week";
 export const DATA_CASH = "cash";
 export const DATA_FANS = "fans";
+export const DATA_SINGLES = "singles";
+export const DATA_ALBUMS = "albums";

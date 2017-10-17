@@ -170,8 +170,6 @@ class Start extends Component {
       case 0:
         return (
           <form className="form-horizontal" onSubmit={this.validateBandName}>
-            <h4 className="text-center">Enter a Band Name</h4>
-            <br/>
             <div className="form-group">
               <div className="col-2">
                 <label className="form-label" htmlFor="txtBandName">Band Name:</label>
@@ -200,8 +198,6 @@ class Start extends Component {
       case 1:
         return (
           <form className="form-horizontal" onSubmit={this.validateCreate}>
-            <h4 className="text-center">Create Your Character</h4>
-            <br/>
             <div className="form-group">
               <div className="col-2">
                 <label className="form-label" htmlFor="txtYourName">Your Name:</label>
@@ -363,8 +359,6 @@ class Start extends Component {
 
         return (
           <form className="form-horizontal" onSubmit={this.validateBandMembers}>
-            <h4 className="text-center">Select Band Members</h4>
-            <br/>
             <div className="centered col-8">
               {instrument === INSTRUMENTS.VOCALS ? null : radioVocals}
               {instrument === INSTRUMENTS.GUITAR ? null : radioGuitar}
@@ -550,8 +544,6 @@ class Start extends Component {
   }
 
   render() {
-    // const {bandName} = this.state;
-
     return(
       <div className="page container">
         <div className="panel">

@@ -8,6 +8,8 @@ import songsReducer from './songsReducer';
 import weekReducer from './weekReducer';
 import cashReducer from './cashReducer';
 import fansReducer from './fansReducer';
+import singlesReducer from './singlesReducer';
+import albumsReducer from './albumsReducer';
 
 export default combineReducers({
   state: (state = {}) => state,
@@ -15,5 +17,7 @@ export default combineReducers({
   songs: songsReducer,
   week: weekReducer,
   cash: cashReducer,
-  fans: fansReducer
+  fans: fansReducer,
+  singles: singlesReducer,
+  albums: albumsReducer
 });

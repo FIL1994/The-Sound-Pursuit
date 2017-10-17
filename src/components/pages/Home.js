@@ -178,7 +178,7 @@ class Home extends Component {
             <h3>{band.name}</h3>
             <div className="divider"/>
             <div className="centered text-center">
-              <div className="btn-group btn-group-block centered col-3">
+              <div className="btn-group btn-group-block centered col-2">
                 <button type="button" className="btn btn-lg" onClick={this.playShow}>
                   Play Show
                 </button>
@@ -189,8 +189,8 @@ class Home extends Component {
               <div className="centered col-3">
                 {
                   !showShow ? null :
-                  <div className="toast">
-                    <span>New Fans: {newFans} | Cash: ${newCash}</span>
+                  <div className="toast centered text-center">
+                    <span>New Fans: {newFans}<br/>Cash: ${newCash}</span>
                   </div>
                 }
                 {
