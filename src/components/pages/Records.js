@@ -10,13 +10,97 @@ import _ from 'lodash';
 import {getSongs, getSingles, getAlbums} from '../../actions';
 
 class Records extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showAlbums: false
+    };
+
+    this.renderSingles = this.renderSingles.bind(this);
+    this.renderAlbums = this.renderAlbums.bind(this);
+  }
+
   componentWillMount() {
     this.props.getSongs();
     this.props.getSingles();
     this.props.getAlbums();
   }
 
+  renderSingles() {
+    let {singles} = this.props;
+    singles = _.sortBy(singles, (({released}) => {
+      return -released;
+    }));
+
+    if(_.isEmpty(singles)){
+      return;
+    }
+
+    return(
+      <div>
+        <h4 className="text-center">Singles</h4>
+        <div className="scrollable">
+          {
+            singles.map(({id, title, quality, released, salesLastWeek, sales}) => {
+              return(
+                <div className="card" key={id}>
+                  <div className="card-header">
+                    <div className="card-title h5">{title}</div>
+                  </div>
+                  <div className="card-body">
+                    Released: Week {released}<br/>
+                    Quality: {quality}<br/>
+                    Sales Last Week: {salesLastWeek}<br/>
+                    Total Sales: {sales}<br/>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    );
+  }
+
+  renderAlbums() {
+    let {albums} = this.props;
+    albums = _.sortBy(albums, (({released}) => {
+      return -released;
+    }));
+
+    if(_.isEmpty(albums)){
+      return;
+    }
+
+    return(
+      <div>
+        <h4 className="text-center">Albums</h4>
+        <div className="scrollable">
+          {
+            albums.map(({id, title, quality, released, salesLastWeek, sales}) => {
+              return(
+                <div className="card" key={id}>
+                  <div className="card-header">
+                    <div className="card-title h5">{title}</div>
+                  </div>
+                  <div className="card-body">
+                    Released: Week {released}<br/>
+                    Quality: {quality}<br/>
+                    Sales Last Week: {salesLastWeek}<br/>
+                    Total Sales: {sales}<br/>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    );
+  }
+
   render() {
+    const {showAlbums} = this.state;
     const {songs, singles, albums} = this.props;
     return(
       <div className="page container" id="page-records">
@@ -24,6 +108,17 @@ class Records extends Component {
           <Link to="/records/release" className="btn btn-lg btn-primary">
             Release New Record
           </Link>
+        </div>
+        <br/>
+        <div className="form-group text-right">
+          {`Singles `}
+          <label className="form-switch">
+            <input type="checkbox"
+               onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
+               checked={showAlbums}
+            />
+            <i className="form-icon"/> Albums
+          </label>
         </div>
         <div>
           {
@@ -37,7 +132,13 @@ class Records extends Component {
               </div>
             :
               <div>
-                records
+                {
+                  showAlbums
+                  ?
+                    this.renderAlbums()
+                  :
+                    this.renderSingles()
+                }
               </div>
           }
         </div>

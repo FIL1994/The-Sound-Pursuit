@@ -193,11 +193,23 @@ class ReleaseRecord extends Component {
       errorProducer = "You must select a producer";
     }
     if(_.isEmpty(errorProducer) && _.isEmpty(errorAlbum)) {
+      // calculate quality
+      const {songs} = this.props;
+
+      let sumQuality = 0, avgQuality, quality;
+      checkboxes.forEach((s) => {
+        const song = _.find(songs, {'id': s});
+        sumQuality += ((song.quality * 3) + (song.recording * 2)) / 5;
+      });
+      avgQuality = sumQuality / checkboxes.length;
+      quality = ((avgQuality * 5) + producer.quality) / 6;
+      quality = Number(quality.toFixed(2));
+
       let album = {
         title: albumTitle,
         songs: checkboxes,
         released: this.props.week,
-        quality: 0,
+        quality,
         sales: 0,
         salesLastWeek: 0
       };
@@ -250,11 +262,15 @@ class ReleaseRecord extends Component {
     }
 
     if(_.isEmpty(errorProducer) && _.isEmpty(errorSingle)) {
+      // calculate quality
+      let quality = ((song.quality * 3) + (song.recording * 2) + producer.quality) / 6;
+      quality = Number(quality.toFixed(2));
+
       let single = {
         title: song.title,
         song : songID,
         released: this.props.week,
-        quality: 0,
+        quality,
         sales: 0,
         salesLastWeek: 0
       };
