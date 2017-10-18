@@ -30,6 +30,10 @@ body {
     color: #e85600;
 }
 
+.toast {
+    margin-top: 5px;
+}
+
 .panel {
     background-color: #e8e8e8;
     padding-bottom: 10px;

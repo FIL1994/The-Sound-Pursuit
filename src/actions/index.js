@@ -44,6 +44,7 @@ export function getBand() {
           dispatch(sendReturn({type: ERROR_BAND, error}));
         } else {
           dispatch(sendReturn({type: GET_BAND, payload: val}));
+          return val;
         }
       }
     );
@@ -60,6 +61,7 @@ export function getSongs() {
           dispatch(sendReturn({type: ERROR_SONG, error}));
         } else {
           dispatch(sendReturn({type: GET_SONGS, payload: val}));
+          return val;
         }
       }
     );
@@ -165,6 +167,7 @@ export function getWeek() {
         } else {
           val = _.defaultTo(Number(val), 0);
           dispatch(sendReturn({type: GET_WEEK, payload: val}));
+          return val;
         }
       }
     );
@@ -194,15 +197,101 @@ export function nextWeek(weeks) {
           dispatch(sendReturn({type: ERROR_WEEK, error}));
         } else {
           val = _.defaultTo(Number(val), 0);
+          weeks = _.isFinite(weeks) ? weeks : 1;
 
-          val += _.isFinite(weeks) ? weeks : 1;
-          localForage.setItem(DATA_WEEK, val);
-
-          dispatch(sendReturn({type: GET_WEEK, payload: val}));
+          // get albums and singles
+           dispatch(getAlbums()).then((albums) => {
+             dispatch(getSingles()).then((singles) => {
+               dispatch(getFans()).then((fans) => {
+                 if(_.isEmpty(albums) && _.isEmpty(singles)) {
+                   val += weeks;
+                   localForage.setItem(DATA_WEEK, val);
+                   dispatch(sendReturn({type: GET_WEEK, payload: val}));
+                   return;
+                 }
+                 for (let i = 0; i < weeks; i++) {
+                   val++;
+                   let newData = calculateSales({albums, singles, week: val, fans, dispatch});
+                   albums = newData.albums;
+                   singles = newData.albums;
+                   fans = newData.fans;
+                 }
+                 localForage.setItem(DATA_WEEK, val);
+                 dispatch(sendReturn({type: GET_WEEK, payload: val}));
+               });
+             });
+           });
         }
       }
     );
   };
+
+  function calculateSales({albums, singles, week, fans, dispatch}) {
+    let newCash = 0;
+    singles.forEach(({released, quality, salesLastWeek}, index) => {
+      const age = week - released;
+      const salesLast = 16;
+      if(age < salesLast) {
+        let sales = _.ceil(((fans * (quality / 120)) * ((salesLast - age)/(salesLast - 1))) * _.random(0.164, 0.231));
+
+        // save sales
+        singles[index].salesLastWeek = sales;
+        singles[index].sales += sales;
+
+        // calculate cash
+        newCash += sales * .2; // $.2 for each single sold
+
+        // calculate new fans
+        let multiplier = 0.005;
+        if(fans < Math.pow(10, 5)) {
+          // less than 100 thousand
+          multiplier = .45;
+        } else if(fans < Math.pow(10, 6)) {
+          // less than 1 million
+          multiplier = .25;
+        } else if(fans < Math.pow(10, 7)) {
+          multiplier = .03;
+        }
+        fans += _.ceil(sales * multiplier);
+
+        console.log(age, "sales: ", sales);
+      } else if(salesLastWeek !== 0) {
+        singles[index].salesLastWeek = 0;
+      }
+    });
+    albums.forEach(({released, quality, salesLastWeek}, index) => {
+      const age = week - released;
+      const salesLast = 41;
+      if(age < salesLast) {
+        let sales = _.ceil(((fans * (quality / 180)) * ((salesLast - age)/(salesLast - 1))) * _.random(.155, .213));
+
+        // save sales
+        albums[index].salesLastWeek = sales;
+        albums[index].sales += sales;
+
+        // calculate cash
+        newCash += sales * 1; // $1 for each album sold
+
+        console.log(age, "album: ", sales);
+      } else if(salesLastWeek !== 0) {
+        albums[index].salesLastWeek = 0;
+      }
+    });
+    if(!_.isEmpty(singles)) {
+      dispatch(saveSingles(singles));
+    }
+    if(!_.isEmpty(albums)) {
+      dispatch(saveAlbums(albums));
+    }
+    dispatch(saveFans(fans));
+    dispatch(addCash(newCash));
+
+    dispatch(sendReturn({type: GET_WEEK, payload: week}));
+
+    return {
+      albums, singles, fans
+    };
+  }
 }
 // END WEEK
 
@@ -216,6 +305,7 @@ export function getFans() {
         } else {
           val = _.defaultTo(Number(val), 0);
           dispatch(sendReturn({type: GET_FANS, payload: val}));
+          return val;
         }
       }
     );
@@ -275,6 +365,7 @@ export function getCash() {
           }
 
           dispatch(sendReturn({type: GET_CASH, payload: val}));
+          return val;
         }
       }
     );
@@ -333,6 +424,7 @@ export function getSingles() {
             singles = [];
           }
           dispatch(sendReturn({type: GET_SINGLES, payload: singles}));
+          return singles;
         }
       }
     );
@@ -400,6 +492,7 @@ export function getAlbums() {
             albums = [];
           }
           dispatch(sendReturn({type: GET_ALBUMS, payload: albums}));
+          return albums;
         }
       }
     );

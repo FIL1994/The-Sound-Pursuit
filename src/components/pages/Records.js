@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 import _ from 'lodash';
-import {getSongs, getSingles, getAlbums} from '../../actions';
+import {getSongs, getSingles, getAlbums, getWeek} from '../../actions';
 
 class Records extends Component {
   constructor(props) {
@@ -22,19 +22,27 @@ class Records extends Component {
   }
 
   componentWillMount() {
+    this.props.getWeek();
     this.props.getSongs();
     this.props.getSingles();
     this.props.getAlbums();
   }
 
   renderSingles() {
-    let {singles} = this.props;
+    let {singles, week} = this.props;
     singles = _.sortBy(singles, (({released}) => {
       return -released;
     }));
 
     if(_.isEmpty(singles)){
-      return;
+      return (
+        <div className="empty">
+          <div className="empty-icon">
+            <i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>
+          </div>
+          <p className="empty-title h5">You haven't released any singles yet</p>
+        </div>
+      );
     }
 
     return(
@@ -49,7 +57,7 @@ class Records extends Component {
                     <div className="card-title h5">{title}</div>
                   </div>
                   <div className="card-body">
-                    Released: Week {released}<br/>
+                    Age: {week - released} weeks<br/>
                     Quality: {quality}<br/>
                     Sales Last Week: {salesLastWeek}<br/>
                     Total Sales: {sales}<br/>
@@ -64,13 +72,20 @@ class Records extends Component {
   }
 
   renderAlbums() {
-    let {albums} = this.props;
+    let {albums, week} = this.props;
     albums = _.sortBy(albums, (({released}) => {
       return -released;
     }));
 
     if(_.isEmpty(albums)){
-      return;
+      return (
+        <div className="empty">
+          <div className="empty-icon">
+            <i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>
+          </div>
+          <p className="empty-title h5">You haven't released any albums yet</p>
+        </div>
+      );
     }
 
     return(
@@ -85,7 +100,7 @@ class Records extends Component {
                     <div className="card-title h5">{title}</div>
                   </div>
                   <div className="card-body">
-                    Released: Week {released}<br/>
+                    Age: {week - released} weeks<br/>
                     Quality: {quality}<br/>
                     Sales Last Week: {salesLastWeek}<br/>
                     Total Sales: {sales}<br/>
@@ -110,16 +125,6 @@ class Records extends Component {
           </Link>
         </div>
         <br/>
-        <div className="form-group text-right">
-          {`Singles `}
-          <label className="form-switch">
-            <input type="checkbox"
-               onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
-               checked={showAlbums}
-            />
-            <i className="form-icon"/> Albums
-          </label>
-        </div>
         <div>
           {
             _.isEmpty(singles) && _.isEmpty(albums)
@@ -132,6 +137,16 @@ class Records extends Component {
               </div>
             :
               <div>
+                <div className="form-group text-right">
+                  {`Singles `}
+                  <label className="form-switch">
+                    <input type="checkbox"
+                           onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
+                           checked={showAlbums}
+                    />
+                    <i className="form-icon"/> Albums
+                  </label>
+                </div>
                 {
                   showAlbums
                   ?
@@ -151,8 +166,9 @@ function mapStateToProps(state) {
   return {
     songs: state.songs,
     singles: state.singles,
-    albums: state.albums
+    albums: state.albums,
+    week: state.week
   };
 }
 
-export default connect(mapStateToProps, {getSongs, getSingles, getAlbums})(Records);
+export default connect(mapStateToProps, {getSongs, getSingles, getAlbums, getWeek})(Records);

@@ -80,15 +80,20 @@ class Home extends Component {
   }
 
   practice() {
-    let {leadMember, members, practices, practicesToLevelUp} = this.props.band;
-    let practiceToast;
+    let {leadMember, members, practices, practicesToLevelUp, totalPractices} = this.props.band;
+    const prevPracticesToLevelUp = _.clone(practicesToLevelUp);
+    let practiceToast, timesLeveledUp = 0;
 
-    practices++;
-    if(practices >= practicesToLevelUp) {
-      practicesToLevelUp = practicesToLevelUp + _.ceil(practices/10);
+    practices += 3;
+    totalPractices += practices;
+    while(practices >= practicesToLevelUp) {
+      console.log("run");
+      timesLeveledUp++;
+      practices = practices - practicesToLevelUp;
+      practicesToLevelUp = _.ceil(totalPractices/25);
       // increment value but only allow a maximum of 100
       function incrementMax100(val) {
-        return _.min([val+1, 100]);
+        return _.min([val + 1, 100]);
       }
       // Increase members' and lead member's skills
       members = members.map((m) => {
@@ -105,18 +110,24 @@ class Home extends Component {
       leadMember.skills.musicianship = incrementMax100(leadMember.skills.musicianship);
       leadMember.skills.songwriting = incrementMax100(leadMember.skills.songwriting);
       leadMember.skills.studio = incrementMax100(leadMember.skills.studio);
+    }
 
-      practiceToast = <span>Leveled Up!</span>;
+    const progress = _.ceil((practices / practicesToLevelUp) * 100);
+    console.log(progress);
+    window.practices = practices;
+    window.practicesToLevelUp = practicesToLevelUp;
+    window.prevPracticesToLevelUp = prevPracticesToLevelUp;
+    if(timesLeveledUp > 0) {
+      practiceToast = <span>Leveled Up!{timesLeveledUp > 1 ? ` (x${timesLeveledUp})` : ''}</span>;
     } else {
       practiceToast = <progress
         className="progress"
-        value={_.ceil((practices / practicesToLevelUp) * 100)}
+        value={progress}
         max="100"
       />;
-        //<span>{((practices / practicesToLevelUp) * 100).toFixed()}% to next level</span>;
     }
 
-    this.props.saveBand({...this.props.band, leadMember, members, practices, practicesToLevelUp});
+    this.props.saveBand({...this.props.band, leadMember, members, practices, practicesToLevelUp, totalPractices});
     this.props.nextWeek();
 
     const lastPractice = Date.now() / 1000;
@@ -127,6 +138,7 @@ class Home extends Component {
       lastPractice
     });
 
+    // in 3 seconds (from the last practice) hide practice toast
     setTimeout(() => {
       const now = Date.now() / 1000;
       if(now > this.state.lastPractice + 2.9) {

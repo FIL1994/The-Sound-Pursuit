@@ -530,7 +530,8 @@ class Start extends Component {
           members,
           leadMember,
           practices: 0,
-          practicesToLevelUp: 1
+          practicesToLevelUp: 1,
+          totalPractices: 0
         })
       );
 
