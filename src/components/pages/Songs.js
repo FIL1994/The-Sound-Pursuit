@@ -305,7 +305,7 @@ class Songs extends Component {
     return (
       <div className="empty">
         <div className="empty-icon">
-          <i className="icon icon-3x icon-edit"/>
+          <i className="fa fa-music fa-4x"/>
         </div>
         <p className="empty-title h5">You haven't written any songs yet</p>
       </div>
@@ -316,6 +316,17 @@ class Songs extends Component {
     songs = songs.filter(({single, album}) => {
       return !(_.isNumber(single) || _.isNumber(album));
     });
+
+    if(songs.length < 1) {
+      return (
+        <div className="empty">
+          <div className="empty-icon">
+            <i className="icon icon-3x icon-edit"/>
+          </div>
+          <p className="empty-title h5">You don't have any unreleased songs</p>
+        </div>
+      );
+    }
 
     return (
       <table className="table table-striped table-hover text-center">

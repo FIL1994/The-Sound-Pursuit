@@ -3,8 +3,11 @@
  * @date 2017-10-10.
  */
 import _ from 'lodash';
-import {SAVE_BAND, GET_BAND, ERROR_BAND, GET_SONGS, ERROR_SONG, SAVE_SONGS,
-  SAVE_CASH, GET_CASH, ERROR_CASH, SAVE_WEEK, GET_WEEK, ERROR_WEEK, GET_FANS, SAVE_FANS, ERROR_FANS} from './types';
+import {
+  SAVE_BAND, GET_BAND, ERROR_BAND, GET_SONGS, ERROR_SONG, SAVE_SONGS,
+  SAVE_CASH, GET_CASH, ERROR_CASH, SAVE_WEEK, GET_WEEK, ERROR_WEEK, GET_FANS, SAVE_FANS, ERROR_FANS, GET_SINGLES,
+  ERROR_SINGLES, ERROR_ALBUMS, GET_ALBUMS, SAVE_SINGLES, SAVE_ALBUMS
+} from './types';
 import localForage, {DATA_BAND, DATA_SONGS, DATA_CASH, DATA_WEEK, DATA_FANS, DATA_ALBUMS, DATA_SINGLES} from '../data/localForage';
 
 const defaultCash = 250;
@@ -316,3 +319,136 @@ export function addCash(newCash) {
   };
 }
 // END CASH
+
+// START SINGLES
+export function getSingles() {
+  return dispatch => {
+    return localForage.getItem(DATA_SINGLES).then(
+      (singles, error) => {
+        if(error) {
+          dispatch(sendReturn({type: ERROR_SINGLES, error}));
+        } else {
+          if(_.isEmpty(singles)) {
+            singles = [];
+          }
+          dispatch(sendReturn({type: GET_SINGLES, payload: singles}));
+        }
+      }
+    );
+  };
+}
+
+export function saveSingles(singles) {
+  return dispatch => {
+    return localForage.setItem(DATA_SINGLES, singles).then(
+      (val, error) => {
+        if (error) {
+          dispatch(sendReturn({type: ERROR_SINGLES, error}));
+        }
+        else {
+          dispatch(sendReturn({type: SAVE_SINGLES, payload: val}));
+        }
+      }
+    );
+  };
+}
+
+export function addSingle(single) {
+  return dispatch => {
+    return localForage.getItem(DATA_SINGLES).then(
+      (singles, error) => {
+        if (error) {
+          dispatch(sendReturn({type: ERROR_SINGLES, error}));
+        }
+        else {
+          if (_.isEmpty(singles)) {
+            singles = [];
+            single.id = 0;
+          } else {
+            let maxID = 0;
+            try {
+              maxID = _.maxBy(singles, (s) => {
+                return s.id;
+              }).id;
+            } catch (e) {
+              singles.forEach((s, index) => {
+                s.id = index;
+              });
+              maxID = singles.length - 1;
+            }
+            single.id = maxID + 1;
+          }
+          singles.push(single);
+          dispatch(saveSingles(singles));
+        }
+      }
+    );
+  }
+}
+// END SINGLES
+
+// START ALBUMS
+export function getAlbums() {
+  return dispatch => {
+    return localForage.getItem(DATA_ALBUMS).then(
+      (albums, error) => {
+        if(error) {
+          dispatch(sendReturn({type: ERROR_ALBUMS, error}));
+        } else {
+          if(_.isEmpty(albums)) {
+            albums = [];
+          }
+          dispatch(sendReturn({type: GET_ALBUMS, payload: albums}));
+        }
+      }
+    );
+  };
+}
+
+export function saveAlbums(singles) {
+  return dispatch => {
+    return localForage.setItem(DATA_ALBUMS, singles).then(
+      (val, error) => {
+        if (error) {
+          dispatch(sendReturn({type: SAVE_ALBUMS, error}));
+        }
+        else {
+          dispatch(sendReturn({type: GET_ALBUMS, payload: val}));
+        }
+      }
+    );
+  };
+}
+
+export function addAlbum(album) {
+  return dispatch => {
+    return localForage.getItem(DATA_ALBUMS).then(
+      (albums, error) => {
+        if(error) {
+          dispatch(sendReturn({type: ERROR_ALBUMS, error}));
+        } else {
+          if(_.isEmpty(albums)) {
+           albums = [];
+           album.id = 0;
+          } else {
+            let maxID = 0;
+            try {
+              maxID = _.maxBy(albums, (a) => {
+                return a.id;
+              }).id;
+            } catch(e) {
+              albums.forEach((a, index) => {
+                a.id = index;
+              });
+              maxID = albums.length -1;
+            }
+            album.id = maxID + 1;
+          }
+          albums.push(album);
+          dispatch(saveAlbums(albums));
+        }
+      }
+    );
+  }
+}
+// END ALBUMS

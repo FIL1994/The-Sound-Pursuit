@@ -1,5 +1,20 @@
+-release single/album validate cost and subtract
+-view released singles and albums
+-calculate album sales
+-calculate single and album quality
+-sort songs 
+-songs add written date
+-fix start band member popup
+-start - max name length
+-cant release single/album within x weeks of last release
+-fans & cash tween on change
+-reset fans, songs, money and week on start
+-promote
+-10 years - submit highscore
+-date w/ moment js
 -happiness system
 -leisure
+-record companies/contracts
 -tour/play show
 	-pick bands to go on tour with
 	-tour crew - better attendance and members stay happier

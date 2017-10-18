@@ -11,6 +11,7 @@ import Home from './components/pages/Home';
 import Start from './components/pages/Start';
 import Songs from './components/pages/Songs';
 import Records from './components/pages/Records';
+import ReleaseRecord from './components/pages/ReleaseRecord';
 
 class App extends Component {
   render() {
@@ -23,7 +24,8 @@ class App extends Component {
             <Route path="/start/" component={Start}/>
             <Route exact path="/" component={Home}/>
             <Route path="/songs/" component={Songs}/>
-            <Route path="/records/" component={Records}/>
+            <Route exact path="/records/" component={Records}/>
+            <Route path="/records/release" component={ReleaseRecord}/>
             <Redirect to="/"/>
           </Switch>
         </div>
