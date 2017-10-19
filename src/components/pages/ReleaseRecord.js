@@ -9,7 +9,7 @@ import {Link} from 'react-router-dom';
 import $ from 'jquery';
 import _ from 'lodash';
 import {getBand, getCash, saveCash, getSongs, updateSong, saveSongs, getSingles, addSingle, getAlbums, addAlbum,
-  nextWeek, getWeek} from '../../actions';
+  removeCash, nextWeek, getWeek} from '../../actions';
 import getRandomSongName from '../../data/randomSongName';
 import producers from '../../data/producers';
 
@@ -23,6 +23,7 @@ class ReleaseRecord extends Component {
     this.validateAlbum = this.validateAlbum.bind(this);
     this.validateSingle = this.validateSingle.bind(this);
     this.changedProducer = this.changedProducer.bind(this);
+    this.checkEnoughCash = this.checkEnoughCash.bind(this);
 
     this.state = {
       isSingle: true,
@@ -40,6 +41,10 @@ class ReleaseRecord extends Component {
     this.props.getSongs();
     this.props.getCash();
     this.props.getWeek();
+  }
+
+  checkEnoughCash(cost) {
+    return cost <= this.props.cash;
   }
 
   renderProducers() {
@@ -134,7 +139,7 @@ class ReleaseRecord extends Component {
             </div>
           </div>
           <div>
-            <div id="albums-song-select" onChange={(() => {console.log("album select changed")})}>
+            <div id="albums-song-select">
               <label className="form-label">Select Songs:</label>
               {
                 songs.map(({id, title}) => {
@@ -156,19 +161,30 @@ class ReleaseRecord extends Component {
     return songList;
   }
 
-  changedProducer() {
+  changedProducer(isSingle) {
     let producerID = $('input[name=producers]:checked').val();
     producerID = Number(producerID);
+    isSingle = _.isBoolean(isSingle) ? isSingle : this.state.isSingle;
 
-    if(_.isFinite(producerID) && this.state.producerID !== producerID) {
-      this.setState({
-        producerID
-      })
+    if(_.isFinite(producerID)) {
+      let errorProducer = null;
+      const {name, cost: {single, album}} = producers[producerID];
+      const hasEnoughCash = this.checkEnoughCash(isSingle ? single : album);
+      if(!hasEnoughCash) {
+        errorProducer = `You don't have enough cash to hire ${name}`;
+      }
+
+      if(this.state.producerID !== producerID || errorProducer !== this.state.errorProducer) {
+        this.setState({
+          producerID,
+          errorProducer
+        })
+      }
     }
   }
 
   validateAlbum() {
-    let errorProducer = null, errorAlbum = null, producer, checkboxes = [];
+    let errorProducer = null, errorAlbum = null, producer, checkboxes = [], cost;
     // album title
     let albumTitle = $('#txtAlbumTitle').val();
     if(_.isEmpty(albumTitle)) {
@@ -189,9 +205,17 @@ class ReleaseRecord extends Component {
     const producerID = Number($('input[name=producers]:checked').val());
     if(_.isFinite(producerID)) {
       producer = producers[Number(producerID)];
+      cost = producer.cost.album;
+
+      // enough cash check
+      if(!this.checkEnoughCash(cost)) {
+        errorProducer = `You don't have enough cash to hire ${producer.name}`;
+      }
     } else {
       errorProducer = "You must select a producer";
     }
+
+    // if no errors
     if(_.isEmpty(errorProducer) && _.isEmpty(errorAlbum)) {
       // calculate quality
       const {songs} = this.props;
@@ -231,6 +255,8 @@ class ReleaseRecord extends Component {
         });
       });
 
+      this.changedProducer(false); // isSingle = false
+      this.props.removeCash(cost);
       this.props.nextWeek();
     }
 
@@ -238,15 +264,14 @@ class ReleaseRecord extends Component {
       errorProducer,
       errorAlbum
     });
-
-    console.log(albumTitle, checkboxes, producer);
   }
 
   validateSingle() {
-    let errorProducer = null, errorSingle = null, song, producer;
+    let errorProducer = null, errorSingle = null, song, producer, cost;
     const songID = Number($('input[name=songs]:checked').val());
     const producerID = Number($('input[name=producers]:checked').val());
 
+    // get song
     if(_.isFinite(songID)) {
       const {songs} = this.props;
       song = _.find(songs, (s) => {
@@ -255,12 +280,20 @@ class ReleaseRecord extends Component {
     } else {
       errorSingle = "You must select a song";
     }
+    // get producer
     if(_.isFinite(producerID)) {
       producer = producers[producerID];
+      cost = producer.cost.single;
+
+      // enough cash check
+      if(!this.checkEnoughCash(cost)) {
+        errorProducer = `You do not have enough money to hire ${producer.name}`;
+      }
     } else {
       errorProducer = "You must select a producer";
     }
 
+    // if no errors
     if(_.isEmpty(errorProducer) && _.isEmpty(errorSingle)) {
       // calculate quality
       let quality = ((song.quality * 3) + (song.recording * 2) + producer.quality) / 6;
@@ -285,6 +318,8 @@ class ReleaseRecord extends Component {
         });
       });
 
+      this.changedProducer(true); // isSingle = true
+      this.props.removeCash(cost);
       this.props.nextWeek();
     }
 
@@ -311,12 +346,12 @@ class ReleaseRecord extends Component {
         <div className="centered text-center">
           <div className="btn-group btn-group-block centered col-4">
             <button type="button" className={`btn btn-lg ${isSingle ? 'btn-primary' : ''}`}
-              onClick={() => {this.setState({isSingle: true})}}
+              onClick={() => {this.changedProducer(true); this.setState({isSingle: true});}}
             >
               Single
             </button>
             <button type="button" className={`btn btn-lg ${isSingle ? '' : 'btn-primary'}`}
-              onClick={() => {this.setState({isSingle: false})}}
+              onClick={() => {this.changedProducer(false); this.setState({isSingle: false})}}
             >
               Album
             </button>
@@ -354,5 +389,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {getBand, getCash, saveCash, getSongs, updateSong, getSingles, addSingle,
-  getAlbums, addAlbum, nextWeek, getWeek, saveSongs})(ReleaseRecord);
+export default connect(mapStateToProps, {getBand, getCash, saveCash, removeCash, getSongs, updateSong, getSingles,
+  addSingle, getAlbums, addAlbum, nextWeek, getWeek, saveSongs})(ReleaseRecord);

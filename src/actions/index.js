@@ -391,24 +391,48 @@ export function saveCash(cash) {
   };
 }
 
-export function addCash(newCash) {
+export function addCash(amount) {
   return dispatch => {
     return localForage.getItem(DATA_CASH).then(
-      (val, error) => {
+      (cash, error) => {
         if(error) {
           dispatch(sendReturn({type: ERROR_CASH, error}));
         } else {
           // if val is NaN set val to default cash
-          val = !_.isNaN(val) ? val : defaultCash;
+          cash = !_.isNaN(cash) ? cash : defaultCash;
           // if val (as a string) is not more than 0 character set val to default cash
-          val = _.toString(val).length > 0 ? val : defaultCash;
+          cash = _.toString(cash).length > 0 ? cash : defaultCash;
           // if val is not a finite number set val to default cash
-          val = _.isFinite(val) ? val : defaultCash;
+          cash = _.isFinite(cash) ? cash : defaultCash;
 
-          newCash = Number(newCash);
-          val = Number((val + newCash).toFixed(2));
+          amount = Number(amount);
+          cash = Number((cash + amount).toFixed(2));
 
-          dispatch(saveCash(val));
+          dispatch(saveCash(cash));
+        }
+      }
+    );
+  };
+}
+
+export function removeCash(amount) {
+  return dispatch => {
+    return localForage.getItem(DATA_CASH).then(
+      (cash, error) => {
+        if(error) {
+          dispatch(sendReturn({type: ERROR_CASH, error}));
+        } else {
+          // if val is NaN set val to default cash
+          cash = !_.isNaN(cash) ? cash : defaultCash;
+          // if val (as a string) is not more than 0 character set val to default cash
+          cash = _.toString(cash).length > 0 ? cash : defaultCash;
+          // if val is not a finite number set val to default cash
+          cash = _.isFinite(cash) ? cash : defaultCash;
+
+          amount = Number(amount);
+          cash = Number((cash - amount).toFixed(2));
+
+          dispatch(saveCash(cash));
         }
       }
     );
