@@ -39,6 +39,10 @@ body {
     height: 450px;
 }
 
+.scrollable.start {
+    height: 530px;
+}
+
 /*Overrides*/
 .is-error {
     color: #e85600;

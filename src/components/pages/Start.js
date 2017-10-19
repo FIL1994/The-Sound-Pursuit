@@ -171,6 +171,8 @@ class Start extends Component {
       case 0:
         return (
           <form className="form-horizontal" onSubmit={this.validateBandName}>
+            <h4 className="text-center">Enter a Band Name</h4>
+            <br/>
             <div className="form-group">
               <div className="col-2">
                 <label className="form-label" htmlFor="txtBandName">Band Name:</label>
@@ -199,6 +201,8 @@ class Start extends Component {
       case 1:
         return (
           <form className="form-horizontal" onSubmit={this.validateCreate}>
+            <h4 className="text-center">Create You Character</h4>
+            <br/>
             <div className="form-group">
               <div className="col-2">
                 <label className="form-label" htmlFor="txtYourName">Your Name:</label>
@@ -360,6 +364,8 @@ class Start extends Component {
 
         return (
           <form className="form-horizontal" onSubmit={this.validateBandMembers}>
+            <h4 className="text-center">Select Band Members</h4>
+            <br/>
             <div className="centered col-8">
               {instrument === INSTRUMENTS.VOCALS ? null : radioVocals}
               {instrument === INSTRUMENTS.GUITAR ? null : radioGuitar}
@@ -385,9 +391,12 @@ class Start extends Component {
       error.bandName = "You must enter a band name.";
       bandName = null;
     } else if(bandName.length < 2) {
-      error.bandName = "Your band name must be more than one character.";
+      error.bandName = "Your band name must be more than 1 character.";
       bandName = null;
-    } else {
+    } else if(bandName.length > 30) {
+      error.bandName = "Your band name must less than 30 characters.";
+      bandName = null;
+    } else{
       error.bandName = null;
     }
 
@@ -416,7 +425,10 @@ class Start extends Component {
       error.yourName = "You must enter a name.";
       yourName = null;
     } else if(yourName.length < 2) {
-      error.yourName = "Your name must be more than one character.";
+      error.yourName = "Your name must be more than 1 character.";
+      yourName = null;
+    } else if(yourName.length > 30) {
+      error.yourName = "Your band name must less than 30 characters.";
       yourName = null;
     } else {
       error.yourName = null;
@@ -544,7 +556,7 @@ class Start extends Component {
   render() {
     return(
       <div className="page container">
-        <div className="panel">
+        <div className="panel scrollable start">
           <div className="centered col-10 panel-body">
             {this.renderSteps()}
             <div className="divider"/>

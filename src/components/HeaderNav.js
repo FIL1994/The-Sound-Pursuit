@@ -83,7 +83,7 @@ class HeaderNav extends Component {
             </span>
           </h6>
           <h6 className="centered p-2">
-            {_.isNumber(this.props.cash) ? `$${this.props.cash}` : <div className="loading"/>}
+            {_.isNumber(this.props.cash) ? `$${this.props.cash.toFixed(2)}` : <div className="loading"/>}
           </h6>
           <h6 className="centered p-2">
             {_.isNumber(this.props.week) ? `Week ${this.props.week}` : <div className="loading"/>}
