@@ -232,4 +232,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {getBand, saveBand, getFans, getCash, getWeek, addFans, addCash, nextWeek})(Dashboard);
+export default connect(mapStateToProps, {getBand, saveBand, getFans, getCash, getWeek, addFans, addCash,
+  nextWeek})(Dashboard);

@@ -26,6 +26,7 @@ class Songs extends Component {
     this.renderModalEditSong = this.renderModalEditSong.bind(this);
     this.renderModalRecordSong = this.renderModalRecordSong.bind(this);
     this.recordSongSubmit = this.recordSongSubmit.bind(this);
+    this.validateStudioSelect = this.validateStudioSelect.bind(this);
   }
 
   componentWillMount() {
@@ -35,15 +36,16 @@ class Songs extends Component {
   }
 
   writeSongSubmit() {
+    let txtSongName = $('#txtSongName');
     if(_.isEmpty(this.props.band)) {
       return;
     }
-    let songTitle = $('#txtSongName').val();
+    let songTitle = txtSongName.val();
 
     if(_.isEmpty(songTitle)) {
       songTitle = getRandomSongName();
     } else {
-      $('#txtSongName').val('');
+      txtSongName.val('');
     }
 
     songTitle = _.truncate(songTitle, {length: 30});
@@ -78,7 +80,7 @@ class Songs extends Component {
   }
 
   editSongSubmit() {
-    let id, txtNewSongName = $('#txtNewSongName');
+    let id, txtNewSongName = $("#txtNewSongName");
     try {
       id = Number(txtNewSongName.data().id);
     } catch(e) {
@@ -112,7 +114,7 @@ class Songs extends Component {
       return;
     }
     let {cash} = this.props;
-    let id, selectStudio = $('#selectStudio');
+    let id, selectStudio = $("#selectStudio");
     let studioID = selectStudio.val();
     try {
       id = Number(selectStudio.data().id);
@@ -225,8 +227,35 @@ class Songs extends Component {
     );
   }
 
+  validateStudioSelect(event, initialCheck) {
+    let studioID, errorRecording = null;
+
+    try {
+      studioID = event.target.value;
+    } catch(e) {
+      studioID = Number($('#selectStudio').val());
+    }
+
+    if(_.isNaN(studioID)) {
+      return;
+    }
+
+    if(studios[studioID].cost > this.props.cash) {
+      errorRecording = "You don't have enough cash.";
+    }
+
+    if((_.isBoolean(initialCheck) ? !initialCheck : true) && (studioID !== this.state.studioID)) {
+      this.setState({
+        studioID
+      });
+    }
+
+    return errorRecording;
+  }
+
   renderModalRecordSong() {
-    const buttonSubmitProps = this.state.errorRecording
+    const errorRecording = this.validateStudioSelect(null, true);
+    const buttonSubmitProps = errorRecording
       ?
         {
           className: "btn btn-primary disabled",
@@ -250,27 +279,8 @@ class Songs extends Component {
             <div className="content">
               <div className="form-group">
                 <label htmlFor="#selectStudio">Select Studio:</label>
-                <select id="selectStudio" className={`form-select ${this.state.errorRecording ? 'is-error' : ''}`}
-                  onChange={
-                    (event) =>
-                    {
-                      let studioID = event.target.value, errorRecording = null;
-
-                      console.log(
-                        studios[studioID].cost,
-                        this.props.cash
-                      );
-
-                      if(studios[studioID].cost > this.props.cash) {
-                        errorRecording = "You don't have enough cash.";
-                      }
-
-                      this.setState({
-                        studioID,
-                        errorRecording
-                      });
-                    }
-                  }
+                <select id="selectStudio" className={`form-select ${errorRecording ? 'is-error' : ''}`}
+                  onChange={this.validateStudioSelect}
                 >
                   {
                     studios.map(({name}, index) => {
@@ -281,7 +291,7 @@ class Songs extends Component {
                   }
                 </select>
                 <div className="form-input-hint">
-                  {this.state.errorRecording}
+                  {errorRecording}
                 </div>
               </div>
               <div>

@@ -374,6 +374,10 @@ export function getCash() {
 
 export function saveCash(cash) {
   return dispatch => {
+    cash = Number(cash.toFixed(2));
+
+    cash = _.isFinite(cash) ? cash : defaultCash;
+
     return localForage.setItem(DATA_CASH, cash).then(
       (val, error) => {
         if (error) {
