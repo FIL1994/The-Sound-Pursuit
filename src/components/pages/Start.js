@@ -13,6 +13,7 @@ import getRandomBandName from '../../data/randomBandName';
 import getRandomName from '../../data/names';
 import generateBandMember from '../../data/generateBandMember';
 import {saveBand} from '../../actions';
+import {resetDataAsync} from '../../data/resetData';
 
 class Start extends Component {
   constructor(props) {
@@ -371,9 +372,6 @@ class Start extends Component {
             </button>
           </form>
         );
-      case 3:
-        this.props.history.push('/dashboard');
-        break;
     }
   }
 
@@ -523,8 +521,7 @@ class Start extends Component {
         leadMember = drums;
       }
 
-      console.log(
-        "CREATE DATA_BAND",
+      resetDataAsync().then(() => {
         this.props.saveBand({
           name: this.state.bandName,
           members,
@@ -532,10 +529,10 @@ class Start extends Component {
           practices: 0,
           practicesToLevelUp: 1,
           totalPractices: 0
-        })
-      );
-
-      step++;
+        }).then(() => {
+          this.props.history.push('/dashboard');
+        });
+      });
     }
 
     this.setState({

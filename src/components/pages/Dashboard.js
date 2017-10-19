@@ -87,7 +87,6 @@ class Dashboard extends Component {
     practices += 3;
     totalPractices += practices;
     while(practices >= practicesToLevelUp) {
-      console.log("run");
       timesLeveledUp++;
       practices = practices - practicesToLevelUp;
       practicesToLevelUp = _.ceil(totalPractices/25);
@@ -113,7 +112,6 @@ class Dashboard extends Component {
     }
 
     const progress = _.ceil((practices / practicesToLevelUp) * 100);
-    console.log(progress);
     window.practices = practices;
     window.practicesToLevelUp = practicesToLevelUp;
     window.prevPracticesToLevelUp = prevPracticesToLevelUp;

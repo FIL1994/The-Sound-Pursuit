@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import $ from 'jquery';
 import _ from 'lodash';
 import getRandomSongName from '../../data/randomSongName';
-import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong, nextWeek} from '../../actions';
+import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong, getWeek, nextWeek} from '../../actions';
 import studios from '../../data/studios';
 
 class Songs extends Component {
@@ -17,7 +17,9 @@ class Songs extends Component {
 
     this.state = {
       errorRecording: null,
-      studioID: 0
+      studioID: 0,
+      column: "written",
+      sortAsc: true
     };
 
     this.writeSongSubmit = this.writeSongSubmit.bind(this);
@@ -27,12 +29,38 @@ class Songs extends Component {
     this.renderModalRecordSong = this.renderModalRecordSong.bind(this);
     this.recordSongSubmit = this.recordSongSubmit.bind(this);
     this.validateStudioSelect = this.validateStudioSelect.bind(this);
+    this.handleSort = this.handleSort.bind(this);
+    this.sortSongs = this.sortSongs.bind(this);
+    this.renderIcon = this.renderIcon.bind(this);
   }
 
   componentWillMount() {
     this.props.getBand();
     this.props.getSongs();
     this.props.getCash();
+    this.props.getWeek();
+  }
+
+  handleSort(clickedColumn) {
+    let {column, sortAsc} = this.state;
+
+    if(column !== clickedColumn) {
+      sortAsc = true;
+    } else {
+      sortAsc = !sortAsc;
+    }
+
+    this.setState({
+      column: clickedColumn,
+      sortAsc
+    });
+  }
+
+  sortSongs() {
+    let {songs} = this.props;
+    const {column, sortAsc} = this.state;
+
+    return _.orderBy(songs, [column], [sortAsc ? 'asc' : 'desc']);
   }
 
   writeSongSubmit() {
@@ -72,7 +100,8 @@ class Songs extends Component {
       quality: Number(_.random(avgSongwriting, maxSongwriting, true).toFixed(2)),
       recording: null,
       single: null, // id of single
-      album: null // id of album
+      album: null, // id of album
+      written: this.props.week
     };
 
     this.props.writeSong(song);
@@ -322,8 +351,24 @@ class Songs extends Component {
     );
   }
 
-  renderSongList(songs) {
-    songs = songs.filter(({single, album}) => {
+  renderIcon(thisColumn, isString) {
+    const {column, sortAsc} = this.state;
+    let className = "fa fa-sort";
+
+    if(thisColumn === column) {
+      if(isString) {
+        className = sortAsc ? "fa fa-sort-alpha-asc " : "fa fa-sort-alpha-desc";
+      }
+      else {
+        className = sortAsc ? "fa fa-sort-numeric-asc" : "fa fa-sort-numeric-desc";
+      }
+    }
+
+    return <i className={className} aria-hidden="true"/>;
+  }
+
+  renderSongList() {
+    let songs = this.sortSongs().filter(({single, album}) => {
       return !(_.isNumber(single) || _.isNumber(album));
     });
 
@@ -342,9 +387,22 @@ class Songs extends Component {
       <table className="table table-striped table-hover text-center">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Quality</th>
-            <th>Recording</th>
+            <th className="c-hand" onClick={() => {this.handleSort('title')}}>
+              {`Title `}
+              {this.renderIcon('title', true)}
+            </th>
+            <th className="c-hand" onClick={() => {this.handleSort('written')}}>
+              {`Written `}
+              {this.renderIcon('written', false)}
+            </th>
+            <th className="c-hand" onClick={() => {this.handleSort('quality')}}>
+              {`Quality `}
+              {this.renderIcon('quality', false)}
+            </th>
+            <th className="c-hand" onClick={() => {this.handleSort('recording')}}>
+              {`Recording `}
+              {this.renderIcon('recording', false)}
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -354,6 +412,7 @@ class Songs extends Component {
               return(
                 <tr key={s.id}>
                   <td>{s.title}</td>
+                  <td>{s.written}</td>
                   <td>{s.quality}</td>
                   <td>{s.recording}</td>
                   <td>
@@ -409,7 +468,7 @@ class Songs extends Component {
               <h5 className="text-left">Total Songs: {songs.length}</h5>
               <br/>
               <div className="scrollable">
-                {this.renderSongList(songs)}
+                {this.renderSongList()}
               </div>
             </div>
         }
@@ -422,9 +481,10 @@ function mapStateToProps(state) {
   return {
     band: state.band,
     songs: state.songs,
-    cash: state.cash
+    cash: state.cash,
+    week: state.week
   };
 }
 
 export default connect(mapStateToProps, {getBand, getCash, saveCash, getSongs, writeSong, updateSong,
-  deleteSong, nextWeek})(Songs);
+  deleteSong, getWeek, nextWeek})(Songs);
