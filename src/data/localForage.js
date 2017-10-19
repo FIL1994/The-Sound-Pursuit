@@ -5,8 +5,8 @@
 import localForage from 'localforage';
 
 localForage.config({
-  name: "band-game",
-  version: 1.0
+  name: "band-game-alpha",
+  version: 0.1
 });
 
 // For Testing Only

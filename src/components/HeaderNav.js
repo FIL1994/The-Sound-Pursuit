@@ -30,8 +30,8 @@ class HeaderNav extends Component {
   renderLinks() {
     return [
       <NavLink
-        key="home"
-        to="/"
+        key="dashboard"
+        to="/dashboard"
         className="btn btn-lg"
         activeClassName="btn-primary"
         isActive={this.isLinkActive}
@@ -60,16 +60,20 @@ class HeaderNav extends Component {
   }
 
   render() {
-    const isMatch = matchPath(this.props.location.pathname, {
+    const isStart = matchPath(this.props.location.pathname, {
       path: "/start",
       strict: false,
       isExact: true
     });
 
+    if(this.props.location.pathname === "/") {
+      return null;
+    }
+
     return(
       <header className="navbar bg-dark">
         <section className="navbar-section">
-          {isMatch ? <a className="btn btn-lg">Home</a> : this.renderLinks()}
+          {isStart ? <NavLink to="/" className="btn btn-lg">Back to Main Menu</NavLink> : this.renderLinks()}
         </section>
         <section className="navbar section text-light">
           <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip="Fans">

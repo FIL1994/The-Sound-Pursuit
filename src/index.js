@@ -14,10 +14,6 @@ import ReduxPromise from 'redux-promise';
 import App from './App';
 import reducers from './reducers';
 
-// development only
-import resetData from './data/resetData';
-window.resetData = resetData;
-
 const store = createStore(reducers, applyMiddleware(ReduxThunk));
 
 ReactDOM.render(

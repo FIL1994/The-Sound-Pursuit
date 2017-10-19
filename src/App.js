@@ -7,11 +7,12 @@ import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 
 import HasStarted from './components/HasStarted';
 import HeaderNav from './components/HeaderNav';
-import Home from './components/pages/Home';
+import Dashboard from './components/pages/Dashboard';
 import Start from './components/pages/Start';
 import Songs from './components/pages/Songs';
 import Records from './components/pages/Records';
 import ReleaseRecord from './components/pages/ReleaseRecord';
+import MainMenu from './components/pages/MainMenu';
 
 class App extends Component {
   render() {
@@ -21,8 +22,9 @@ class App extends Component {
           <HasStarted/>
           <HeaderNav/>
           <Switch>
+            <Route exact path="/" component={MainMenu}/>
             <Route path="/start/" component={Start}/>
-            <Route exact path="/" component={Home}/>
+            <Route path="/dashboard/" component={Dashboard}/>
             <Route path="/songs/" component={Songs}/>
             <Route exact path="/records/" component={Records}/>
             <Route path="/records/release" component={ReleaseRecord}/>

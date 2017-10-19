@@ -372,7 +372,7 @@ class Start extends Component {
           </form>
         );
       case 3:
-        this.props.history.push('/');
+        this.props.history.push('/dashboard');
         break;
     }
   }

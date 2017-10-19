@@ -20,6 +20,20 @@ body {
     margin-right: 8px;
 }
 
+.spaced div{
+    margin-bottom: 5px;
+}
+
+.toast-bottom {
+    position: absolute;
+    bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 350px;
+    left: 0;
+    right: 0;
+}
+
 .scrollable {
     overflow-y: scroll;
     height: 450px;
