@@ -8,7 +8,7 @@
     "build": "webpack -p --progress --colors"
   },
   "author": "Philip Van Raalte",
-  "license": "ISC",
+  "license": "GPL",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -31,7 +31,6 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0"
   }
 }
