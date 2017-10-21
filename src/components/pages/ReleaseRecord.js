@@ -92,6 +92,15 @@ class ReleaseRecord extends Component {
       return;
     }
 
+    songs = songs.map((s) => {
+      return {
+        ...s,
+        recordQuality: (((s.quality * 3) + (s.recording * 2)) / 5)
+      };
+    });
+
+    songs = _.orderBy(songs, ['recordQuality'], ['desc']);
+
     const {isSingle, errorSingle, errorAlbum} = this.state;
     if(isSingle) {
       songs = songs.filter((s) => {
@@ -111,11 +120,11 @@ class ReleaseRecord extends Component {
           <div className={`form-group centered text-center ${!_.isEmpty(errorSingle) ? 'has-error' : ''}`}>
             <label className="form-label">Select Song:</label>
             {
-              songs.map(({id, title}) => {
+              songs.map(({id, title, recordQuality}) => {
                 return (
                   <label className="form-radio" key={id}>
                     <input type="radio" value={id} name="songs"/>
-                    <i className="form-icon"/> {title}
+                    <i className="form-icon"/> {`${title} (${recordQuality.toFixed(2)})`}
                   </label>
                 )
               })
@@ -142,11 +151,11 @@ class ReleaseRecord extends Component {
             <div id="albums-song-select">
               <label className="form-label">Select Songs:</label>
               {
-                songs.map(({id, title}) => {
+                songs.map(({id, title, recordQuality}) => {
                   return (
                     <label key={id} className={`form-checkbox ${!_.isEmpty(errorAlbum) ? 'has-error' : ''}`}>
                       <input type="checkbox" value={id}/>
-                      <i className="form-icon"/> {title}
+                      <i className="form-icon"/> {`${title} (${recordQuality.toFixed(2)})`}
                     </label>
                   )
                 })

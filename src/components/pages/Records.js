@@ -137,12 +137,12 @@ class Records extends Component {
               </div>
             :
               <div>
-                <div className="form-group text-right">
+                <div className="form-group text-center">
                   {`Singles `}
                   <label className="form-switch">
                     <input type="checkbox"
-                           onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
-                           checked={showAlbums}
+                       onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
+                       checked={showAlbums}
                     />
                     <i className="form-icon"/> Albums
                   </label>

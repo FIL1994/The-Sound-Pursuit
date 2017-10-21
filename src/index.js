@@ -21,5 +21,7 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+// NG Start Session
+initSession();
 startSession();
 getDateTime();

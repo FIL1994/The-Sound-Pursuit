@@ -7,9 +7,9 @@ import {ngAppID, ngKey} from '../config/keys';
 import _ from 'lodash';
 
 let ngio = new Newgrounds.io.core(ngAppID, ngKey);
-let MEDAL, medals = [], scoreboards = [], sessionStarted = false, medalsLoaded = false;
+let medals = [], scoreboards = [], sessionStarted = false, medalsLoaded = false;
 const afterSessionStart = (result) => {console.log("Session has started", result);};
-const afterMedalsLoaded = () => {console.log("Medals loaded");};
+const afterMedalsLoaded = () => {console.log("Medals loaded", medals);};
 
 export function startSession() {
   ngio.callComponent("App.startSession", {}, (result) => {
@@ -19,6 +19,10 @@ export function startSession() {
     sessionStarted = true;
     afterSessionStart(result);
   });
+}
+
+export function getMedals() {
+  return medals;
 }
 
 function onMedalsLoaded(result) {
@@ -47,7 +51,6 @@ export function getDateTime() {
 
 function onMedalUnlocked(medal) {
   console.log(`Unlocked: ${medal.unlocked}`);
-  MEDAL = medal;
 
   // show medal
 }
