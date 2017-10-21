@@ -527,15 +527,16 @@ export function getAlbums() {
   };
 }
 
-export function saveAlbums(singles) {
+export function saveAlbums(albums) {
   return dispatch => {
-    return localForage.setItem(DATA_ALBUMS, singles).then(
+    console.log("SaveAlbums", albums);
+    return localForage.setItem(DATA_ALBUMS, albums).then(
       (val, error) => {
         if (error) {
-          dispatch(sendReturn({type: SAVE_ALBUMS, error}));
+          dispatch(sendReturn({type: ERROR_ALBUMS, error}));
         }
         else {
-          dispatch(sendReturn({type: GET_ALBUMS, payload: val}));
+          dispatch(sendReturn({type: SAVE_ALBUMS, payload: albums}));
         }
       }
     );
@@ -553,6 +554,7 @@ export function addAlbum(album) {
            albums = [];
            album.id = 0;
           } else {
+            console.log("addAlbum", albums);
             let maxID = 0;
             try {
               maxID = _.maxBy(albums, (a) => {
@@ -567,6 +569,7 @@ export function addAlbum(album) {
             album.id = maxID + 1;
           }
           albums.push(album);
+          console.log("addAlbum NEW", albums);
           dispatch(saveAlbums(albums));
         }
       }

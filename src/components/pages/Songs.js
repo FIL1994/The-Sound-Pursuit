@@ -19,7 +19,7 @@ class Songs extends Component {
       errorRecording: null,
       studioID: 0,
       column: "written",
-      sortAsc: true
+      sortAsc: false
     };
 
     this.writeSongSubmit = this.writeSongSubmit.bind(this);
@@ -388,7 +388,7 @@ class Songs extends Component {
           <div className="empty-icon">
             <i className="icon icon-3x icon-edit"/>
           </div>
-          <p className="empty-title h5">You don't have any usable songs</p>
+          <p className="empty-title h5">You don't have any unreleased songs</p>
         </div>
       );
     }
@@ -476,7 +476,7 @@ class Songs extends Component {
             this.renderEmpty()
           :
             <div className="col-10 centered">
-              <h5 className="text-left">Usable Songs: {usableSongs.length}</h5>
+              <h5 className="text-left">Unreleased Songs: {usableSongs.length}</h5>
               <br/>
               <div className="scrollable">
                 {this.renderSongList()}

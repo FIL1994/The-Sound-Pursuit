@@ -32,7 +32,8 @@ class ReleaseRecord extends Component {
       producerID: null,
       errorProducer: null,
       errorSingle: null,
-      errorAlbum: null
+      errorAlbum: null,
+      finished: null
     };
   }
 
@@ -211,7 +212,7 @@ class ReleaseRecord extends Component {
   }
 
   validateAlbum() {
-    let errorProducer = null, errorAlbum = null, producer, checkboxes = [], cost, released = false;
+    let errorProducer = null, errorAlbum = null, producer, checkboxes = [], cost;
     // album title
     let albumTitle = $('#txtAlbumTitle').val();
     if(_.isEmpty(albumTitle)) {
@@ -265,11 +266,14 @@ class ReleaseRecord extends Component {
         salesLastWeek: 0
       };
 
-      released = true;
+      this.changedProducer(false); // isSingle = false
+      this.props.removeCash(cost);
+
       // get album id and save songs
       this.props.addAlbum(album).then(() => {
         this.props.getAlbums().then(() => {
           const {albums, songs} = this.props;
+          console.log(albums);
           const album = _.maxBy(albums, 'released');
 
           album.songs.forEach((s) => {
@@ -279,28 +283,26 @@ class ReleaseRecord extends Component {
           });
 
           this.props.saveSongs(songs).then(() => {
-            this.props.getSongs();
+            this.props.nextWeek().then(() => {
+              setTimeout(() => {
+                this.setState({
+                  finished: "album"
+                });
+              });
+            });
           });
         });
       });
-
-      this.changedProducer(false); // isSingle = false
-      this.props.removeCash(cost);
-      this.props.nextWeek();
     }
 
     this.setState({
       errorProducer,
       errorAlbum
     });
-
-    if(released) {
-      this.props.history.push('/records');
-    }
   }
 
   validateSingle() {
-    let errorProducer = null, errorSingle = null, song, producer, cost, released = false;
+    let errorProducer = null, errorSingle = null, song, producer, cost;
     const songID = Number($('input[name=songs]:checked').val());
     const producerID = Number($('input[name=producers]:checked').val());
 
@@ -341,7 +343,9 @@ class ReleaseRecord extends Component {
         salesLastWeek: 0
       };
 
-      released = true;
+      this.changedProducer(true); // isSingle = true
+      this.props.removeCash(cost);
+
       // get id and save song
       this.props.addSingle(single).then(() => {
         this.props.getSingles().then(() => {
@@ -349,34 +353,27 @@ class ReleaseRecord extends Component {
           const single = _.maxBy(singles, 'released');
           let song = _.find(songs, {'id': single.song});
           song.single = single.id;
-          this.props.updateSong(song);
+          this.props.updateSong(song).then(() => {
+            this.props.nextWeek().then(() => {
+              this.setState({
+                finished: "single"
+              });
+            });
+          });
         });
       });
-
-      this.changedProducer(true); // isSingle = true
-      this.props.removeCash(cost);
-      this.props.nextWeek();
     }
 
     this.setState({
       errorProducer,
       errorSingle
     });
-
-    if(released) {
-      this.props.history.push('/records');
-    }
   }
 
   renderPanel() {
     const {isSingle} = this.state;
     const submitValidate = isSingle ? this.validateSingle : this.validateAlbum;
     const {songs} = this.props;
-    // let songs = isSingle
-    //   ?
-    //     this.getSongsEligibleForSingle(this.props.songs)
-    //   :
-    //     this.getSongsEligibleForAlbum(this.props.songs);
 
     let pageContent;
 
@@ -430,7 +427,18 @@ class ReleaseRecord extends Component {
   }
 
   render() {
-    const {isSingle} = this.state;
+    const {isSingle, finished} = this.state;
+
+    if(!_.isEmpty(finished)) {
+      if(finished === "album") {
+        this.props.history.push({
+          pathname: "/records",
+          search: "?showAlbum=true"
+        });
+      } else if(finished === "single") {
+        this.props.history.push("/records");
+      }
+    }
 
     return (
       <div className="page container" id="page-records">
