@@ -367,10 +367,20 @@ class Songs extends Component {
     return <i className={className} aria-hidden="true"/>;
   }
 
+  getUsableSongs(songs) {
+    try {
+      songs = songs.filter(({single, album}) => {
+        return !(_.isNumber(single) || _.isNumber(album));
+      });
+    } catch (e) {
+      songs = [];
+    }
+
+    return songs;
+  }
+
   renderSongList() {
-    let songs = this.sortSongs().filter(({single, album}) => {
-      return !(_.isNumber(single) || _.isNumber(album));
-    });
+    let songs = this.getUsableSongs(this.sortSongs());
 
     if(songs.length < 1) {
       return (
@@ -378,7 +388,7 @@ class Songs extends Component {
           <div className="empty-icon">
             <i className="icon icon-3x icon-edit"/>
           </div>
-          <p className="empty-title h5">You don't have any unreleased songs</p>
+          <p className="empty-title h5">You don't have any usable songs</p>
         </div>
       );
     }
@@ -446,6 +456,7 @@ class Songs extends Component {
 
   render() {
     const {songs} = this.props;
+    const usableSongs = this.getUsableSongs(songs);
 
     return(
       <div className="page container" id="page-songs">
@@ -465,7 +476,7 @@ class Songs extends Component {
             this.renderEmpty()
           :
             <div className="col-10 centered">
-              <h5 className="text-left">Total Songs: {songs.length}</h5>
+              <h5 className="text-left">Usable Songs: {usableSongs.length}</h5>
               <br/>
               <div className="scrollable">
                 {this.renderSongList()}

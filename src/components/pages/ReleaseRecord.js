@@ -4,6 +4,7 @@
  */
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
@@ -24,6 +25,7 @@ class ReleaseRecord extends Component {
     this.validateSingle = this.validateSingle.bind(this);
     this.changedProducer = this.changedProducer.bind(this);
     this.checkEnoughCash = this.checkEnoughCash.bind(this);
+    this.renderPanel = this.renderPanel.bind(this);
 
     this.state = {
       isSingle: true,
@@ -87,6 +89,32 @@ class ReleaseRecord extends Component {
     );
   }
 
+  getSongsEligibleForSingle(songs) {
+    try {
+      songs = songs.filter((s) => {
+        // return songs that are recorded and not on a single
+        return !_.isNumber(s.single) && _.isNumber(s.recording);
+      });
+    } catch(e) {
+      songs = [];
+    }
+
+    return songs;
+  }
+
+  getSongsEligibleForAlbum(songs) {
+    try {
+      songs = songs.filter((s) => {
+        // return songs that are recorded and not on an album
+        return !_.isNumber(s.album) && _.isNumber(s.recording);
+      });
+    } catch(e) {
+      songs = [];
+    }
+
+    return songs;
+  }
+
   renderSongList(songs) {
     if(_.isEmpty(songs)) {
       return;
@@ -102,17 +130,7 @@ class ReleaseRecord extends Component {
     songs = _.orderBy(songs, ['recordQuality'], ['desc']);
 
     const {isSingle, errorSingle, errorAlbum} = this.state;
-    if(isSingle) {
-      songs = songs.filter((s) => {
-        // return songs that are recorded and not on a single
-        return !_.isNumber(s.single) && _.isNumber(s.recording);
-      });
-    } else {
-      songs = songs.filter((s) => {
-        // return songs that are recorded and not on an album
-        return !_.isNumber(s.album) && _.isNumber(s.recording);
-      });
-    }
+    songs = isSingle ? this.getSongsEligibleForSingle(songs) : this.getSongsEligibleForAlbum(songs);
 
     const songList = isSingle
       ?
@@ -193,7 +211,7 @@ class ReleaseRecord extends Component {
   }
 
   validateAlbum() {
-    let errorProducer = null, errorAlbum = null, producer, checkboxes = [], cost;
+    let errorProducer = null, errorAlbum = null, producer, checkboxes = [], cost, released = false;
     // album title
     let albumTitle = $('#txtAlbumTitle').val();
     if(_.isEmpty(albumTitle)) {
@@ -246,6 +264,8 @@ class ReleaseRecord extends Component {
         sales: 0,
         salesLastWeek: 0
       };
+
+      released = true;
       // get album id and save songs
       this.props.addAlbum(album).then(() => {
         this.props.getAlbums().then(() => {
@@ -273,10 +293,14 @@ class ReleaseRecord extends Component {
       errorProducer,
       errorAlbum
     });
+
+    if(released) {
+      this.props.history.push('/records');
+    }
   }
 
   validateSingle() {
-    let errorProducer = null, errorSingle = null, song, producer, cost;
+    let errorProducer = null, errorSingle = null, song, producer, cost, released = false;
     const songID = Number($('input[name=songs]:checked').val());
     const producerID = Number($('input[name=producers]:checked').val());
 
@@ -316,6 +340,8 @@ class ReleaseRecord extends Component {
         sales: 0,
         salesLastWeek: 0
       };
+
+      released = true;
       // get id and save song
       this.props.addSingle(single).then(() => {
         this.props.getSingles().then(() => {
@@ -336,11 +362,75 @@ class ReleaseRecord extends Component {
       errorProducer,
       errorSingle
     });
+
+    if(released) {
+      this.props.history.push('/records');
+    }
+  }
+
+  renderPanel() {
+    const {isSingle} = this.state;
+    const submitValidate = isSingle ? this.validateSingle : this.validateAlbum;
+    const {songs} = this.props;
+    // let songs = isSingle
+    //   ?
+    //     this.getSongsEligibleForSingle(this.props.songs)
+    //   :
+    //     this.getSongsEligibleForAlbum(this.props.songs);
+
+    let pageContent;
+
+    //default content if enough songs are eligible
+    pageContent = (
+      <div className="panel scrollable">
+        <form className="centered col-10 panel-body">
+          {this.renderSongList(this.props.songs)}
+          <div className="divider"/>
+          {this.renderProducers()}
+          {this.renderProducerDetails()}
+          <button
+            type="button"
+            className="text-center centered btn btn-lg btn-primary"
+            onClick={submitValidate}
+          >
+            Release
+          </button>
+        </form>
+      </div>
+    );
+
+    if(isSingle && this.getSongsEligibleForSingle(songs).length < 1) {
+      pageContent = (
+        <div className="empty">
+          <div className="empty-icon">
+            <i className="fa fa-music fa-4x"/>
+          </div>
+          <p className="empty-title h5">
+            You don't have a song that is eligible for a single.<br/>
+            Go to the <Link to={"/songs"}>Songs page</Link> and write and record a new song.
+          </p>
+        </div>
+      );
+    } else if(!isSingle && this.getSongsEligibleForAlbum(songs).length < 8) {
+      pageContent = (
+        <div className="empty">
+          <div className="empty-icon">
+            <i className="fa fa-music fa-4x"/>
+          </div>
+          <p className="empty-title h5">
+            You don't have enough songs that are eligible for an album.<br/>
+            You have {this.getSongsEligibleForAlbum(songs).length} songs that are eligible. You need at least 8.<br/>
+            Go to the <Link to={"/songs"}>Songs page</Link> and write and record some new songs.
+          </p>
+        </div>
+      );
+    }
+
+    return pageContent;
   }
 
   render() {
     const {isSingle} = this.state;
-    const submitValidate = isSingle ? this.validateSingle : this.validateAlbum;
 
     return (
       <div className="page container" id="page-records">
@@ -367,21 +457,7 @@ class ReleaseRecord extends Component {
           </div>
         </div>
         <br/>
-        <div className="panel scrollable">
-          <form className="centered col-10 panel-body">
-            {this.renderSongList(this.props.songs)}
-            <div className="divider"/>
-            {this.renderProducers()}
-            {this.renderProducerDetails()}
-            <button
-              type="button"
-              className="text-center centered btn btn-lg btn-primary"
-              onClick={submitValidate}
-            >
-              Release
-            </button>
-          </form>
-        </div>
+        {this.renderPanel()}
       </div>
     );
   }
@@ -398,5 +474,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {getBand, getCash, saveCash, removeCash, getSongs, updateSong, getSingles,
-  addSingle, getAlbums, addAlbum, nextWeek, getWeek, saveSongs})(ReleaseRecord);
+export default withRouter(connect(mapStateToProps, {getBand, getCash, saveCash, removeCash, getSongs, updateSong, getSingles,
+  addSingle, getAlbums, addAlbum, nextWeek, getWeek, saveSongs})(ReleaseRecord));
