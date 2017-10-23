@@ -1,0 +1,67 @@
+body {
+    background-color: #f9f9f9;
+}
+
+.left-space-1 {
+    margin-left: .15rem;
+}
+
+.page {
+    width: 95%;
+    margin-top: 10px;
+}
+
+.panel .divider {
+    border-color: #babcbf;
+}
+
+.skill-number {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.spaced div{
+    margin-bottom: 5px;
+}
+
+.toast-bottom {
+    position: absolute;
+    bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 350px;
+    left: 0;
+    right: 0;
+}
+
+.scrollable {
+    overflow-y: scroll;
+    height: 450px;
+}
+
+/*Overrides*/
+.is-error {
+    color: #e85600;
+}
+
+.toast {
+    margin-top: 5px;
+}
+
+.panel {
+    background-color: #e8e8e8;
+    padding-bottom: 10px;
+    border-radius: .3rem;
+}
+
+.table.table-striped tbody tr:nth-of-type(2n+1) {
+    background-color: #edeeef;
+}
+
+.table.table-hover tbody tr:hover {
+    background-color: #e0e1e2;
+}
+
+.navbar-section .btn {
+    height: 100%;
+}

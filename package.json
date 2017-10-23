@@ -18,7 +18,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.2"
+    "webpack-dev-server": "^2.9.3"
   },
   "dependencies": {
     "chance": "^1.0.11",
