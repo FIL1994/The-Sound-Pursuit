@@ -13,6 +13,7 @@ import Songs from './components/pages/Songs';
 import Records from './components/pages/Records';
 import ReleaseRecord from './components/pages/ReleaseRecord';
 import MainMenu from './components/pages/MainMenu';
+import Settings from './components/pages/Settings';
 
 class App extends Component {
   render() {
@@ -27,7 +28,8 @@ class App extends Component {
             <Route path="/dashboard/" component={Dashboard}/>
             <Route path="/songs/" component={Songs}/>
             <Route exact path="/records/" component={Records}/>
-            <Route path="/records/release" component={ReleaseRecord}/>
+            <Route path="/records/release/" component={ReleaseRecord}/>
+            <Route path="/settings/" component={Settings}/>
             <Redirect to="/"/>
           </Switch>
         </div>

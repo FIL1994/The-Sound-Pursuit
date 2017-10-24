@@ -386,7 +386,7 @@ class Songs extends Component {
       return (
         <div className="empty">
           <div className="empty-icon">
-            <i className="icon icon-3x icon-edit"/>
+            <i className="fa fa-pencil fa-4x"/>
           </div>
           <p className="empty-title h5">You don't have any unreleased songs</p>
         </div>

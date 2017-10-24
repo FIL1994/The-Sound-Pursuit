@@ -27,6 +27,18 @@ class HeaderNav extends Component {
     return !(match.url === "/" && !match.isExact);
   }
 
+  formatNumber(number, isFloat) {
+    if(number > 1000000000) {
+      return `${(number / 1000000000).toFixed(2)}B`;
+    } else if (number > 1000000) {
+      return `${(number / 1000000).toFixed(2)}M`;
+    } else if (number > 1000) {
+      return `${(number / 1000).toFixed(2)}K`;
+    } else {
+      return isFloat ? number.toFixed(2) : _.ceil(number);
+    }
+  }
+
   renderLinks() {
     return [
       <NavLink
@@ -76,18 +88,25 @@ class HeaderNav extends Component {
           {isStart ? <NavLink to="/" className="btn btn-lg">Back to Main Menu</NavLink> : this.renderLinks()}
         </section>
         <section className="navbar section text-light">
-          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip="Fans">
+          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip={`${this.props.fans} Fans`}>
             <i className="icon icon-people"/>
             <span className="left-space-1">
-              {_.isNumber(this.props.fans) ? this.props.fans : <div className="loading"/>}
+              {_.isNumber(this.props.fans) ? this.formatNumber(this.props.fans, false) : <div className="loading"/>}
             </span>
           </h6>
-          <h6 className="centered p-2">
-            {_.isNumber(this.props.cash) ? `$${this.props.cash.toFixed(2)}` : <div className="loading"/>}
+          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip={`$${this.props.cash}`}>
+            {_.isNumber(this.props.cash) ? `$${this.formatNumber(this.props.cash, true)}` : <div className="loading"/>}
           </h6>
           <h6 className="centered p-2">
             {_.isNumber(this.props.week) ? `Week ${this.props.week}` : <div className="loading"/>}
           </h6>
+          <NavLink
+            to="/settings"
+            className="text-light centered p-2 tooltip tooltip-bottom"
+            data-tooltip="Settings"
+          >
+            <i className="fa fa-cog my-icon" aria-hidden="true"/>
+          </NavLink>
         </section>
       </header>
     );
