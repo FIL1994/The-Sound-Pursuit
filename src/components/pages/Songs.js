@@ -10,6 +10,7 @@ import _ from 'lodash';
 import getRandomSongName from '../../data/randomSongName';
 import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong, getWeek, nextWeek} from '../../actions';
 import studios from '../../data/studios';
+import {unlockWriteSong, unlockRecordSong} from '../../ng/UnlockMedals';
 
 class Songs extends Component {
   constructor(props) {
@@ -104,6 +105,7 @@ class Songs extends Component {
       written: this.props.week
     };
 
+    unlockWriteSong();
     this.props.writeSong(song);
     this.props.nextWeek();
   }
@@ -187,6 +189,7 @@ class Songs extends Component {
     quality = Number(quality.toFixed(2));
     song.recording = quality;
 
+    unlockRecordSong();
     this.props.saveCash(cash);
     this.props.updateSong(song);
     this.props.nextWeek();

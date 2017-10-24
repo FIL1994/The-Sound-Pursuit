@@ -46,7 +46,10 @@ body {
 .my-icon {
     font-size: 1.5em;
     margin-top: -2px;
+    -o-transition: 200ms;
+    -moz-transition: 200ms;
     -webkit-transition: 200ms;
+    transition: 200ms;
 }
 
 .my-icon:hover {

@@ -7,6 +7,10 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 
 import {getBand, saveBand, getFans, addFans, getCash, addCash, getWeek, nextWeek} from '../../actions';
+import {
+  unlock100NewFans, unlock200NewFans, unlockFirstPractice, unlockFirstShow,
+  unlockSkills25, unlockSkills50, unlockSkills75
+} from '../../ng/UnlockMedals';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -59,6 +63,15 @@ class Dashboard extends Component {
 
     const lastShow = Date.now() / 1000;
 
+    // check show medals
+    unlockFirstShow();
+    if(newFans > 100) {
+      unlock100NewFans();
+      if(newFans > 200) {
+        unlock200NewFans();
+      }
+    }
+
     this.setState({
       showShow: true,
       newFans,
@@ -109,6 +122,28 @@ class Dashboard extends Component {
       leadMember.skills.musicianship = incrementMax100(leadMember.skills.musicianship);
       leadMember.skills.songwriting = incrementMax100(leadMember.skills.songwriting);
       leadMember.skills.studio = incrementMax100(leadMember.skills.studio);
+
+      // check skill medals
+      let liveSkills = [], musicianshipSkills = [], songwritingSkills = [], studioSkills = [];
+      [leadMember, ...members].forEach(({skills: {live, musicianship, songwriting, studio}}) => {
+        liveSkills.push(live);
+        musicianshipSkills.push(musicianship);
+        songwritingSkills.push(songwriting);
+        studioSkills.push(studio);
+      });
+      if(_.min(liveSkills) > 25 && _.min(musicianshipSkills) > 25
+        && _.min(songwritingSkills) > 25 && _.min(studioSkills) > 25) {
+        unlockSkills25();
+        if(_.min(liveSkills) > 50 && _.min(musicianshipSkills) > 50
+          && _.min(songwritingSkills) > 50 && _.min(studioSkills) > 50) {
+          unlockSkills50();
+          if(_.min(liveSkills) > 75 && _.min(musicianshipSkills) > 75
+            && _.min(songwritingSkills) > 75 && _.min(studioSkills) > 75) {
+            unlockSkills75();
+          }
+        }
+      }
+
     }
 
     const progress = _.ceil((practices / practicesToLevelUp) * 100);
@@ -129,6 +164,8 @@ class Dashboard extends Component {
     this.props.nextWeek();
 
     const lastPractice = Date.now() / 1000;
+
+    unlockFirstPractice();
 
     this.setState({
       showPractice: true,

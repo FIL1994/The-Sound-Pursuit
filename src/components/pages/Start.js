@@ -14,6 +14,7 @@ import getRandomName from '../../data/names';
 import generateBandMember from '../../data/generateBandMember';
 import {saveBand} from '../../actions';
 import {resetDataAsync} from '../../data/resetData';
+import {unlockStartBand} from '../../ng/UnlockMedals';
 
 class Start extends Component {
   constructor(props) {
@@ -533,6 +534,7 @@ class Start extends Component {
         leadMember = drums;
       }
 
+      unlockStartBand();
       resetDataAsync().then(() => {
         this.props.saveBand({
           name: this.state.bandName,

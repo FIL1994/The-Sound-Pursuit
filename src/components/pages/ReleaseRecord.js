@@ -13,6 +13,7 @@ import {getBand, getCash, saveCash, getSongs, updateSong, saveSongs, getSingles,
   removeCash, nextWeek, getWeek} from '../../actions';
 import getRandomSongName from '../../data/randomSongName';
 import producers from '../../data/producers';
+import {unlockReleaseSingle, unlockReleaseAlbum} from '../../ng/UnlockMedals';
 
 class ReleaseRecord extends Component {
   constructor(props) {
@@ -282,6 +283,7 @@ class ReleaseRecord extends Component {
             song.album = album.id;
           });
 
+          unlockReleaseAlbum();
           this.props.saveSongs(songs).then(() => {
             this.props.nextWeek().then(() => {
               setTimeout(() => {
@@ -346,6 +348,7 @@ class ReleaseRecord extends Component {
       this.changedProducer(true); // isSingle = true
       this.props.removeCash(cost);
 
+      unlockReleaseSingle();
       // get id and save song
       this.props.addSingle(single).then(() => {
         this.props.getSingles().then(() => {

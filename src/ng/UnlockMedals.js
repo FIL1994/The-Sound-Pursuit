@@ -4,6 +4,10 @@
  */
 import {unlockMedal} from "./NG_Connect";
 
+export function unlockStartBand() {
+  unlockMedal("Start a Band");
+}
+
 export function unlockReleaseSingle() {
   unlockMedal("Release a Single");
 }
@@ -18,10 +22,6 @@ export function unlockWriteSong() {
 
 export function unlockRecordSong() {
   unlockMedal("Record a Song");
-}
-
-export function unlockStartBand() {
-  unlockMedal("Start a Band");
 }
 
 export function unlockFirstShow() {
@@ -72,6 +72,18 @@ export function unlock1mSoldSingles() {
   unlockMedal("1M Sold Singles");
 }
 
+export function unlock10kSoldAlbums() {
+  
+}
+
+export function unlock100kSoldAlbums() {
+  
+}
+
+export function unlock1mSoldAlbums() {
+  
+}
+
 export function unlock100kTotalSoldSingles() {
   unlockMedal("100K Total Sold Singles");
 }
@@ -82,6 +94,18 @@ export function unlock1mTotalSoldSingles() {
 
 export function unlock10mTotalSoldSingles() {
   unlockMedal("10M Total Sold Singles");
+}
+
+export function unlock100kTotalSoldAlbums() {
+  
+}
+
+export function unlock1mTotalSoldAlbums() {
+  
+}
+
+export function unlock10mTotalSoldAlbums() {
+  
 }
 
 export function unlock100NewFans() {

@@ -10,6 +10,12 @@ import {
 } from './types';
 import localForage, {DATA_BAND, DATA_SONGS, DATA_CASH, DATA_WEEK, DATA_FANS, DATA_ALBUMS, DATA_SINGLES}
   from '../data/localForage';
+import {
+  unlock100kFans, unlock100kSoldSingles, unlock10kFans, unlock10kSoldSingles, unlock10Years, unlock1kFans, unlock1mFans,
+  unlock1mSoldSingles, unlock25Years, unlock5Years, unlock10kSoldAlbums, unlock100kSoldAlbums, unlock1mSoldAlbums,
+  unlock100kTotalSoldSingles, unlock1mTotalSoldSingles, unlock10mTotalSoldSingles, unlock100kTotalSoldAlbums,
+  unlock1mTotalSoldAlbums, unlock10mTotalSoldAlbums
+} from '../ng/UnlockMedals';
 
 const defaultCash = 250;
 
@@ -216,6 +222,18 @@ export function nextWeek(weeks) {
                    singles = newData.albums;
                    fans = newData.fans;
                  }
+
+                 // check years medals
+                 if(val > 52 * 5) {
+                   unlock5Years();
+                   if(val > 52 * 10) {
+                     unlock10Years();
+                     if(val > 52 * 25) {
+                       unlock25Years();
+                     }
+                   }
+                 }
+
                  localForage.setItem(DATA_WEEK, val);
                  dispatch(sendReturn({type: GET_WEEK, payload: val}));
                });
@@ -227,7 +245,7 @@ export function nextWeek(weeks) {
   };
 
   function calculateSales({albums, singles, week, fans, dispatch}) {
-    let newCash = 0;
+    let newCash = 0, totalSingleSales = 0, totalAlbumSales = 0;
     singles.forEach(({released, quality, salesLastWeek}, index) => {
       const age = week - released;
       const salesLast = 16;
@@ -254,11 +272,36 @@ export function nextWeek(weeks) {
         }
         fans += _.ceil(sales * multiplier);
 
-        console.log(age, "sales: ", sales);
+        // check single sales medals
+        const singleSales = singles[index].sales;
+        if(singleSales > 10000) {
+          unlock10kSoldSingles();
+          if(singleSales > 100000) {
+            unlock100kSoldSingles();
+            if(singleSales > 1000000) {
+              unlock1mSoldSingles();
+            }
+          }
+        }
+
+        console.log(age, "single sales: ", sales);
       } else if(salesLastWeek !== 0) {
         singles[index].salesLastWeek = 0;
       }
+      totalSingleSales += singles[index].sales;
     });
+
+    // check total single sales medals
+    if(totalSingleSales > 100000) {
+      unlock100kTotalSoldSingles();
+      if(totalSingleSales > 1000000) {
+        unlock1mTotalSoldSingles();
+        if(totalSingleSales > 10000000){
+          unlock10mTotalSoldSingles();
+        }
+      }
+    }
+
     albums.forEach(({released, quality, salesLastWeek}, index) => {
       const age = week - released;
       const salesLast = 41;
@@ -272,11 +315,35 @@ export function nextWeek(weeks) {
         // calculate cash
         newCash += sales * 1; // $1 for each album sold
 
+        const albumSales = albums[index].sales;
+        if(albumSales > 10000) {
+          unlock10kSoldAlbums();
+          if(albumSales > 100000) {
+            unlock100kSoldAlbums();
+            if(albumSales > 1000000) {
+              unlock1mSoldAlbums();
+            }
+          }
+        }
+
         console.log(age, "album: ", sales);
       } else if(salesLastWeek !== 0) {
         albums[index].salesLastWeek = 0;
       }
+      totalAlbumSales += albums[index].sales;
     });
+
+    // check total album sales medals
+    if(totalAlbumSales > 100000) {
+      unlock100kTotalSoldAlbums();
+      if(totalAlbumSales > 1000000) {
+        unlock1mTotalSoldAlbums();
+        if(totalAlbumSales > 10000000){
+          unlock10mTotalSoldAlbums();
+        }
+      }
+    }
+
     if(!_.isEmpty(singles)) {
       dispatch(saveSingles(singles));
     }
@@ -336,6 +403,20 @@ export function addFans(newFans) {
         } else {
           val = _.defaultTo(Number(val), 0);
           newFans = _.ceil(val + _.defaultTo(Number(newFans), 1));
+
+          if(newFans > 1000) {
+            unlock1kFans();
+            if(newFans > 10000) {
+              unlock10kFans();
+              if(newFans > 100000) {
+                unlock100kFans();
+                if(newFans > 1000000) {
+                  unlock1mFans();
+                }
+              }
+            }
+          }
+
           dispatch(saveFans(newFans));
         }
       }
