@@ -73,15 +73,15 @@ export function unlock1mSoldSingles() {
 }
 
 export function unlock10kSoldAlbums() {
-  
+  unlockMedal("10K Sold Albums");
 }
 
 export function unlock100kSoldAlbums() {
-  
+  unlockMedal("100K Sold Albums");
 }
 
 export function unlock1mSoldAlbums() {
-  
+  unlockMedal("1M Sold Albums");
 }
 
 export function unlock100kTotalSoldSingles() {
@@ -97,15 +97,15 @@ export function unlock10mTotalSoldSingles() {
 }
 
 export function unlock100kTotalSoldAlbums() {
-  
+  unlockMedal("100K Total Sold Albums");
 }
 
 export function unlock1mTotalSoldAlbums() {
-  
+  unlockMedal("1M Total Sold Albums");
 }
 
 export function unlock10mTotalSoldAlbums() {
-  
+  unlockMedal("10M Total Sold Albums");
 }
 
 export function unlock100NewFans() {
