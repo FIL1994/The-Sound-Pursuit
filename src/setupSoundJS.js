@@ -15,25 +15,35 @@ if (_.isEmpty(window.songPlaying)) {
     {id: SONGS.PianoLoop.id, src: SONGS.PianoLoop.src}
   ];
 
+  let songStarted = false;
   createjs.Sound.on("fileload", () => {
     localForage.getItem(PLAY_SONG).then(playSong => {
-      // make sure there is only one song playing
-      try {
-        window.songPlaying.destroy();
-      } catch(e){}
-      window.songPlaying = createjs.Sound.play(SONGS.DeepThinkerIntro.id, {volume: window.VOLUME});
+      if (!songStarted) {
+        // make sure there is only one song playing
+        try {
+          window.songPlaying.destroy();
+        } catch (e) {}
+        try {
+          window.songPlaying = createjs.Sound.play(SONGS.DeepThinkerIntro.id, {volume: window.VOLUME});
 
-      window.songPlaying.on("complete", () => {
-        window.songPlaying.destroy();
-        window.songPlaying = createjs.Sound.play(SONGS.DeepThinker.id, {loop: -1, volume: window.VOLUME});
-      }, this);
+          window.songPlaying.on("complete", () => {
+            window.songPlaying.destroy();
+            window.songPlaying = createjs.Sound.play(SONGS.DeepThinker.id, {loop: -1, volume: window.VOLUME});
+          }, this);
 
-      if (playSong) {
-        if (playSong !== "on") {
-          window.songPlaying.stop();
+          if (playSong) {
+            if (playSong !== "on") {
+              window.songPlaying.stop();
+            }
+          } else {
+            localForage.setItem(PLAY_SONG, "on");
+          }
+          if(window.songPlaying.playState !== "playFailed") {
+            songStarted = true;
+          }
+        } catch(e) {
+          console.log("Song Start Error: ", e);
         }
-      } else {
-        localForage.setItem(PLAY_SONG, "on");
       }
     })
   }, this);
