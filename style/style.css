@@ -44,6 +44,7 @@ body {
 }
 
 .my-icon {
+    color: white;
     font-size: 1.5em;
     margin-top: -2px;
     -o-transition: 200ms;

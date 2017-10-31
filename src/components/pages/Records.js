@@ -51,13 +51,14 @@ class Records extends Component {
         <div className="scrollable">
           {
             singles.map(({id, title, quality, released, salesLastWeek, sales}) => {
+              const age = week - released;
               return(
                 <div className="card" key={id}>
                   <div className="card-header">
                     <div className="card-title h5">{title}</div>
                   </div>
                   <div className="card-body">
-                    Age: {week - released} weeks<br/>
+                    Age: {`${age} ${age === 1 ? "week" : "weeks"}`}<br/>
                     Quality: {quality}<br/>
                     Sales Last Week: {salesLastWeek}<br/>
                     Total Sales: {sales}<br/>

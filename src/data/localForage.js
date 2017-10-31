@@ -21,3 +21,5 @@ export const DATA_CASH = "cash";
 export const DATA_FANS = "fans";
 export const DATA_SINGLES = "singles";
 export const DATA_ALBUMS = "albums";
+
+export const PLAY_SONG = "play_song";

@@ -13,6 +13,7 @@ import {startSession, getDateTime, initSession, postScore, unlockMedal} from './
 
 import App from './App';
 import reducers from './reducers';
+import './setupSoundJS';
 
 const store = createStore(reducers, applyMiddleware(ReduxThunk));
 
