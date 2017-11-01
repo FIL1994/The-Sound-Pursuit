@@ -34,21 +34,21 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       //production
-      'process.env.NODE_ENV': JSON.stringify('development') //JSON.stringify(process.env.NODE_ENV || 'development')
+      'process.env.NODE_ENV': JSON.stringify('production') //JSON.stringify(process.env.NODE_ENV || 'development')
     }),
-    // new webpack.optimize.ModuleConcatenationPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: {},
-    //   mangleProperties: {
-    //     screw_ie8: false,
-    //   },
-    //   compress: {
-    //     screw_ie8: false,
-    //   },
-    //   output: {
-    //     screw_ie8: false
-    //   },
-    //   comments: false
-    // })
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: {},
+      mangleProperties: {
+        screw_ie8: false,
+      },
+      compress: {
+        screw_ie8: false,
+      },
+      output: {
+        screw_ie8: false
+      },
+      comments: false
+    })
   ]
 };

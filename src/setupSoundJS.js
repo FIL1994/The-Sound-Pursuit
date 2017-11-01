@@ -24,12 +24,7 @@ if (_.isEmpty(window.songPlaying)) {
           window.songPlaying.destroy();
         } catch (e) {}
         try {
-          window.songPlaying = createjs.Sound.play(SONGS.DeepThinkerIntro.id, {volume: window.VOLUME});
-
-          window.songPlaying.on("complete", () => {
-            window.songPlaying.destroy();
-            window.songPlaying = createjs.Sound.play(SONGS.DeepThinker.id, {loop: -1, volume: window.VOLUME});
-          }, this);
+          window.songPlaying = createjs.Sound.play(SONGS.PianoLoop.id, {loop: -1, volume: window.VOLUME});
 
           if (playSong) {
             if (playSong !== "on") {

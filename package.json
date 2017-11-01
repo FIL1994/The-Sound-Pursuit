@@ -21,9 +21,9 @@
     "webpack-dev-server": "^2.9.3"
   },
   "dependencies": {
-    "chance": "^1.0.11",
+    "chance": "^1.0.12",
     "jquery": "^3.2.1",
-    "localforage": "^1.5.2",
+    "localforage": "^1.5.3",
     "lodash": "^4.17.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

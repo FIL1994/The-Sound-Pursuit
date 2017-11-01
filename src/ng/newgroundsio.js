@@ -23,14 +23,16 @@
  * SOFTWARE.
  */
  /* start namespaces.js */
-let Newgrounds = undefined;
-
-if (typeof(Newgrounds) == 'undefined') {
-	/**
-	 * Newgrounds namespace
-	 * @namespace
-	 */
-	Newgrounds = {};
+try {
+  if (typeof(Newgrounds) == 'undefined') {
+    /**
+     * Newgrounds namespace
+     * @namespace
+     */
+    Newgrounds = {};
+  }
+} catch(e) {
+	var Newgrounds = {};
 }
 
 /**
@@ -75,18 +77,20 @@ Newgrounds.io.model = {
 	checkStrictValue: function(classname, property, value, type, model, array_type, array_model) {
 		if (type == 'mixed') return true;
 		if (value === null || typeof(value) == 'undefined') return true;
-		if (type && value.constructor === type) return true;
-		if (type == Boolean && value.constructor === Number) return true;
-		if (model && value.constructor === Newgrounds.io.model[model]) return true;
-		if (value.constructor === Array && (array_type || array_model)) {
-			for (var i=0; i<value.length; i++) {
-				this.checkStrictValue(classname, property, value[i], array_type, array_model, null, null);
-			}
-			return true;
+		try {
+      if (type && value.constructor === type) return true;
+      if (type == Boolean && value.constructor === Number) return true;
+      if (model && value.constructor === Newgrounds.io.model[model]) return true;
+      if (value.constructor === Array && (array_type || array_model)) {
+        for (var i = 0; i < value.length; i++) {
+          this.checkStrictValue(classname, property, value[i], array_type, array_model, null, null);
+        }
+        return true;
+      }
+    } catch(e) {
+			return false;
 		}
-		
-		if (classname) throw new Error("Illegal '"+property+"' value set in model "+classname);
-		
+		if (classname) throw new Error("Illegal '" + property + "' value set in model " + classname);
 		return false;
 	}
 };
@@ -613,7 +617,6 @@ Newgrounds.io.core.prototype = {
 	 * @param {object} [context] - The context under which the callback will be executed. Optional.
 	 */
 	callComponent: function(component, parameters, callback, context) {
-	
 		if (parameters.constructor ===  Function && !callback) {
 			callback = parameters;
 			parameters = null;

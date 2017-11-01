@@ -18,7 +18,7 @@ export function startSession() {
     ngio.executeQueue();
     sessionStarted = true;
     afterSessionStart(result);
-  });
+  }, this);
 }
 
 export function getMedals() {
@@ -46,7 +46,7 @@ export function getDateTime() {
     } else {
       console.log("ERROR!", result.error.message);
     }
-  });
+  }, this);
 }
 
 function onMedalUnlocked(medal) {
@@ -71,13 +71,13 @@ export function unlockMedal(medalName) {
     return;
   }
   if(!medal.unlocked) {
-    ngio.callComponent("Medal.unlock", {i: medal.id}, ({success, medal: newMedal}) => {
+    ngio.callComponent("Medal.unlock", {id: medal.id}, ({success, medal: newMedal}) => {
       if(success) {
         onMedalUnlocked(newMedal);
         medal.unlocked = true; // store locally to avoid calling API if the medal is already unlocked
         console.log(medal, medals);
       }
-    });
+    }, this);
   }
 }
 
@@ -95,7 +95,7 @@ export function postScore(score, id) {
     if(result.success) {
       onScorePosted(result);
     }
-  });
+  }, this);
 }
 
 export function initSession() {
