@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import _ from 'lodash';
-import localForage, {PLAY_SONG}
+import localForage, {PLAY_SONG, PLAY_MAIN_THEME, SONG_VOLUME}
   from '../../data/localForage';
 import SONGS from '../../data/Songs';
 
@@ -59,11 +59,11 @@ class Settings extends Component {
     }
     else if(songPlaying.paused){
       window.songPlaying.paused = false;
-      localForage.setItem("music", "on");
+      localForage.setItem(PLAY_SONG, "on");
     }
     else {
       window.songPlaying.stop();
-      localForage.setItem("music", "off");
+      localForage.setItem(PLAY_SONG, "off");
     }
   }
 
@@ -72,9 +72,11 @@ class Settings extends Component {
     this.setState({
       volume
     });
+    const newVolume = volume / 100;
+    window.VOLUME = newVolume;
+    window.songPlaying.setVolume(newVolume);
 
-    window.VOLUME = volume / 100;
-    window.songPlaying.setVolume(volume / 100);
+    localForage.setItem(SONG_VOLUME, newVolume);
   }
 
   changeSong(event) {
@@ -93,8 +95,10 @@ class Settings extends Component {
           window.songPlaying.destroy();
           window.songPlaying = createjs.Sound.play(SONGS.DeepThinker.id, {loop: -1, volume: window.VOLUME});
         }, this);
+        localForage.setItem(PLAY_MAIN_THEME, false);
       } else {
         window.songPlaying = createjs.Sound.play(songID, {loop: -1, volume: window.VOLUME});
+        localForage.setItem(PLAY_MAIN_THEME, true);
       }
     }
   }
