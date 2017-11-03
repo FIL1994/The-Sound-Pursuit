@@ -3,7 +3,11 @@
  * @date 2017-10-07.
  */
 import React, {Component} from 'react';
-import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
+import {connect} from 'react-redux';
+
+import _ from 'lodash';
+import {getScore} from './actions/index';
 
 import HasStarted from './components/HasStarted';
 import HeaderNav from './components/HeaderNav';
@@ -17,6 +21,11 @@ import Settings from './components/pages/Settings';
 
 class App extends Component {
   render() {
+    const {score} = this.props;
+    if(!_.isEmpty(score)) {
+      console.log("SCORE FROM APP", this.props.score);
+    }
+
     return(
       <BrowserRouter>
         <div className="site">
@@ -29,13 +38,19 @@ class App extends Component {
             <Route path="/songs/" component={Songs}/>
             <Route exact path="/records/" component={Records}/>
             <Route path="/records/release/" component={ReleaseRecord}/>
-            <Route path="/settings/:hasStarted?" component={Settings}/>
+            <Route path="/settings/" component={Settings}/>
             <Redirect to="/"/>
-          </Switch>
+          </Switch>`
         </div>
       </BrowserRouter>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    score: state.score
+  };
+}
+
+export default connect(mapStateToProps, {getScore})(App);

@@ -6,7 +6,7 @@ import _ from 'lodash';
 import {
   SAVE_BAND, GET_BAND, ERROR_BAND, GET_SONGS, ERROR_SONG, SAVE_SONGS,
   SAVE_CASH, GET_CASH, ERROR_CASH, SAVE_WEEK, GET_WEEK, ERROR_WEEK, GET_FANS, SAVE_FANS, ERROR_FANS, GET_SINGLES,
-  ERROR_SINGLES, ERROR_ALBUMS, GET_ALBUMS, SAVE_SINGLES, SAVE_ALBUMS
+  ERROR_SINGLES, ERROR_ALBUMS, GET_ALBUMS, SAVE_SINGLES, SAVE_ALBUMS, GET_SCORE, SET_SCORE
 } from './types';
 import localForage, {DATA_BAND, DATA_SONGS, DATA_CASH, DATA_WEEK, DATA_FANS, DATA_ALBUMS, DATA_SINGLES}
   from '../data/localForage';
@@ -24,7 +24,7 @@ function sendReturn({type, payload, error}) {
     type,
     payload,
     error
-  }
+  };
 }
 
 // START BAND
@@ -198,11 +198,12 @@ export function saveWeek(week) {
 export function nextWeek(weeks) {
   return dispatch => {
     return localForage.getItem(DATA_WEEK).then(
-      (val, error) => {
+      (week, error) => {
         if(error) {
           dispatch(sendReturn({type: ERROR_WEEK, error}));
         } else {
-          val = _.defaultTo(Number(val), 0);
+          let years5 = false, years10 = false;
+          week = _.defaultTo(Number(week), 0);
           weeks = _.isFinite(weeks) ? weeks : 1;
 
           // get albums and singles
@@ -210,32 +211,45 @@ export function nextWeek(weeks) {
              dispatch(getSingles()).then((singles) => {
                dispatch(getFans()).then((fans) => {
                  if(_.isEmpty(albums) && _.isEmpty(singles)) {
-                   val += weeks;
-                   localForage.setItem(DATA_WEEK, val);
-                   dispatch(sendReturn({type: GET_WEEK, payload: val}));
+                   week += weeks;
+                   localForage.setItem(DATA_WEEK, week);
+                   dispatch(sendReturn({type: GET_WEEK, payload: week}));
                    return;
                  }
+
                  for (let i = 0; i < weeks; i++) {
-                   val++;
-                   let newData = calculateSales({albums, singles, week: val, fans, dispatch});
+                   week++;
+                   let newData = calculateSales({albums, singles, week: week, fans, dispatch});
                    albums = newData.albums;
-                   singles = newData.albums;
+                   singles = newData.singles;
                    fans = newData.fans;
+
+                   if(week >= 52 * 5) {
+                     years5 = true;
+                     setTimeout(() => {
+                       dispatch(calculateScore({years: 5, albums, singles, fans}));
+                     });
+                   } else if(week === 52 * 10) {
+                     years10 = true;
+                     setTimeout(() => {
+                       dispatch(calculateScore({years: 10, albums, singles, fans}));
+                     });
+                   }
                  }
 
                  // check years medals
-                 if(val > 52 * 5) {
+                 if(week >= 52 * 5) {
                    unlock5Years();
-                   if(val > 52 * 10) {
+                   if(week >= 52 * 10) {
                      unlock10Years();
-                     if(val > 52 * 25) {
+                     if(week >= 52 * 25) {
                        unlock25Years();
                      }
                    }
                  }
 
-                 localForage.setItem(DATA_WEEK, val);
-                 dispatch(sendReturn({type: GET_WEEK, payload: val}));
+                 localForage.setItem(DATA_WEEK, week);
+                 dispatch(sendReturn({type: GET_WEEK, payload: week, years5, years10}));
                });
              });
            });
@@ -283,8 +297,6 @@ export function nextWeek(weeks) {
             }
           }
         }
-
-        console.log(age, "single sales: ", sales);
       } else if(salesLastWeek !== 0) {
         singles[index].salesLastWeek = 0;
       }
@@ -325,8 +337,6 @@ export function nextWeek(weeks) {
             }
           }
         }
-
-        console.log(age, "album: ", sales);
       } else if(salesLastWeek !== 0) {
         albums[index].salesLastWeek = 0;
       }
@@ -610,7 +620,6 @@ export function getAlbums() {
 
 export function saveAlbums(albums) {
   return dispatch => {
-    console.log("SaveAlbums", albums);
     return localForage.setItem(DATA_ALBUMS, albums).then(
       (val, error) => {
         if (error) {
@@ -635,7 +644,6 @@ export function addAlbum(album) {
            albums = [];
            album.id = 0;
           } else {
-            console.log("addAlbum", albums);
             let maxID = 0;
             try {
               maxID = _.maxBy(albums, (a) => {
@@ -650,7 +658,6 @@ export function addAlbum(album) {
             album.id = maxID + 1;
           }
           albums.push(album);
-          console.log("addAlbum NEW", albums);
           dispatch(saveAlbums(albums));
         }
       }
@@ -658,3 +665,46 @@ export function addAlbum(album) {
   }
 }
 // END ALBUMS
+
+// START SCORE
+
+function calculateScore({years, albums, singles, fans}) {
+  let score = 0, albumSales = 0, singleSales = 0, bestSellingAlbum = 0, bestSellingSingle = 0;
+
+  // total single sales
+  singles.forEach(({sales}) => {
+    singleSales += sales;
+    if(sales > bestSellingSingle) {
+      bestSellingSingle = sales;
+    }
+  });
+
+  // total albums sales
+  albums.forEach(({sales}) => {
+    albumSales += sales;
+    if(sales > bestSellingAlbum) {
+      bestSellingAlbum = sales;
+    }
+  });
+
+  score = singleSales + albumSales;
+  score += bestSellingSingle * 4; // best selling single added 5 times
+  score += bestSellingAlbum * 9; // best selling album added 10 times
+  score += fans * 5;
+
+  console.log("SCORE", years, albums, singles, fans);
+  console.log("TOTAL SCORE", score);
+
+  return {
+    type: SET_SCORE,
+    payload: {years, score}
+  }
+}
+
+export function getScore() {
+  return {
+    type: GET_SCORE
+  };
+}
+
+// END SCORE

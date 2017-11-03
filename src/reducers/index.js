@@ -10,6 +10,7 @@ import cashReducer from './cashReducer';
 import fansReducer from './fansReducer';
 import singlesReducer from './singlesReducer';
 import albumsReducer from './albumsReducer';
+import scoreReducer from './scoreReducer';
 
 export default combineReducers({
   state: (state = {}) => state,
@@ -19,5 +20,6 @@ export default combineReducers({
   cash: cashReducer,
   fans: fansReducer,
   singles: singlesReducer,
-  albums: albumsReducer
+  albums: albumsReducer,
+  score: scoreReducer
 });

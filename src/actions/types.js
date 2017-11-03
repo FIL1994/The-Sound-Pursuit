@@ -29,3 +29,6 @@ export const ERROR_SINGLES = 'error_singles';
 export const GET_ALBUMS = 'get_albums';
 export const SAVE_ALBUMS = 'save_albums';
 export const ERROR_ALBUMS = 'error_albums';
+
+export const GET_SCORE = 'get_score';
+export const SET_SCORE = 'set_score';

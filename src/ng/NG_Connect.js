@@ -58,7 +58,7 @@ function onMedalUnlocked(medal) {
 export function unlockMedal(medalName) {
   // if no user is attached to ngio object, no one is logged in and medals can't be unlocked
   if(!ngio.user) {
-    console.log(`Cannot unlock medal ${medalName} - user not logged in`);
+    //console.log(`Cannot unlock medal ${medalName} - user not logged in`);
     return;
   }
 

@@ -98,7 +98,11 @@ class HeaderNav extends Component {
 
     if(!_.isEmpty(search)) {
       // get the param by decoding the uri to remove strings such as '%20' and split the string on 'hasStarted=' and '&'
-      paramHasStarted = decodeURI(search).split("hasStarted=")[1].split("&")[0].trim();
+      try {
+        paramHasStarted = decodeURI(search).split("hasStarted=")[1].split("&")[0].trim();
+      } catch(e) {
+        return true;
+      }
     }
 
     return paramHasStarted === "true";
