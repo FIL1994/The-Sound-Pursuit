@@ -1,4 +1,22 @@
 const webpack = require('webpack');
+const isProduction = true;
+
+prodProps = !isProduction ? [] : [
+  new webpack.optimize.ModuleConcatenationPlugin(),
+  new webpack.optimize.UglifyJsPlugin({
+    mangle: {},
+    mangleProperties: {
+      screw_ie8: false,
+    },
+    compress: {
+      screw_ie8: false,
+    },
+    output: {
+      screw_ie8: false
+    },
+    comments: false
+  })
+];
 
 module.exports = {
   entry: [
@@ -33,22 +51,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      //production
-      'process.env.NODE_ENV': JSON.stringify('development') //JSON.stringify(process.env.NODE_ENV || 'development')
+      'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
     }),
-    // new webpack.optimize.ModuleConcatenationPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: {},
-    //   mangleProperties: {
-    //     screw_ie8: false,
-    //   },
-    //   compress: {
-    //     screw_ie8: false,
-    //   },
-    //   output: {
-    //     screw_ie8: false
-    //   },
-    //   comments: false
-    // })
+    ...prodProps
   ]
 };

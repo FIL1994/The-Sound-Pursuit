@@ -29,7 +29,7 @@ class App extends Component {
             <Route path="/songs/" component={Songs}/>
             <Route exact path="/records/" component={Records}/>
             <Route path="/records/release/" component={ReleaseRecord}/>
-            <Route path="/settings/" component={Settings}/>
+            <Route path="/settings/:hasStarted?" component={Settings}/>
             <Redirect to="/"/>
           </Switch>
         </div>

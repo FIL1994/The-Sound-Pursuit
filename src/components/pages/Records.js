@@ -117,7 +117,7 @@ class Records extends Component {
 
   render() {
     const {showAlbums} = this.state;
-    const {songs, singles, albums} = this.props;
+    const {singles, albums} = this.props;
     return(
       <div className="page container" id="page-records">
         <div className="btn-group btn-group-block centered col-2">

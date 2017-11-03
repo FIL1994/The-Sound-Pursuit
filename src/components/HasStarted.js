@@ -18,7 +18,6 @@ class HasStarted extends Component {
       else if(_.isEmpty(value)) {
         this.props.history.push('/start');
       }
-      else {}
     });
   }
 
