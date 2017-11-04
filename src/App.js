@@ -20,15 +20,58 @@ import MainMenu from './components/pages/MainMenu';
 import Settings from './components/pages/Settings';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.renderModalScore = this.renderModalScore.bind(this);
+    this.hideModalScore = this.hideModalScore.bind(this);
+
+    this.state = {
+      modalActive: true
+    };
+  }
+
+  lastScore = {};
+
+  hideModalScore() {
+    this.setState({modalActive: false});
+  }
+
+  renderModalScore() {
+    if(this.lastScore === this.props.score) {
+      return;
+    }
+
+    this.lastScore = this.props.score;
+    const {years, score} = this.lastScore;
+
+    return (
+      <div id="modal-score" className={`modal modal-sm active`}>
+        <a href="#site" className="modal-overlay" aria-label="Close" onClick={this.hideModalScore}/>
+        <div className="modal-container">
+          <div className="modal-header">
+            <a href="#site" className="btn btn-clear float-right" aria-label="Close" onClick={this.hideModalScore}/>
+            <div className="modal-title h5 text-center">Played for {years} Years</div>
+            <div className="modal-body">
+              <div className="content">
+                Submitted score of {score}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <a href="#site" className="btn btn-link" onClick={this.hideModalScore}>Close</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const {score} = this.props;
-    if(!_.isEmpty(score)) {
-      console.log("SCORE FROM APP", this.props.score);
-    }
 
     return(
       <BrowserRouter>
-        <div className="site">
+        <div id="site" className="site">
           <HasStarted/>
           <HeaderNav/>
           <Switch>
@@ -40,7 +83,8 @@ class App extends Component {
             <Route path="/records/release/" component={ReleaseRecord}/>
             <Route path="/settings/" component={Settings}/>
             <Redirect to="/"/>
-          </Switch>`
+          </Switch>
+          {_.isEmpty(score) ? null : this.renderModalScore()}
         </div>
       </BrowserRouter>
     );

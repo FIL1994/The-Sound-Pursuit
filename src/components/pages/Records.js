@@ -60,8 +60,8 @@ class Records extends Component {
                   <div className="card-body">
                     Age: {`${age} ${age === 1 ? "week" : "weeks"}`}<br/>
                     Quality: {quality}<br/>
-                    Sales Last Week: {salesLastWeek}<br/>
-                    Total Sales: {sales}<br/>
+                    Sales Last Week: {salesLastWeek.toLocaleString()}<br/>
+                    Total Sales: {sales.toLocaleString()}<br/>
                   </div>
                 </div>
               );
@@ -103,8 +103,8 @@ class Records extends Component {
                   <div className="card-body">
                     Age: {week - released} weeks<br/>
                     Quality: {quality}<br/>
-                    Sales Last Week: {salesLastWeek}<br/>
-                    Total Sales: {sales}<br/>
+                    Sales Last Week: {salesLastWeek.toLocaleString()}<br/>
+                    Total Sales: {sales.toLocaleString()}<br/>
                   </div>
                 </div>
               );

@@ -58,7 +58,6 @@ function onMedalUnlocked(medal) {
 export function unlockMedal(medalName) {
   // if no user is attached to ngio object, no one is logged in and medals can't be unlocked
   if(!ngio.user) {
-    //console.log(`Cannot unlock medal ${medalName} - user not logged in`);
     return;
   }
 
@@ -86,11 +85,10 @@ function onScorePosted(result) {
 }
 
 export function postScore(score, id) {
-  console.log(`Posting score of ${score}`);
-
   if(!ngio.user) {
-    console.log("Cannot post score - user not logged in");
+    return;
   }
+  console.log(`Posting score of ${score}`);
   ngio.callComponent("ScoreBoard.postScore", {id, value: score}, (result) => {
     if(result.success) {
       onScorePosted(result);

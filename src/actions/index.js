@@ -16,6 +16,8 @@ import {
   unlock100kTotalSoldSingles, unlock1mTotalSoldSingles, unlock10mTotalSoldSingles, unlock100kTotalSoldAlbums,
   unlock1mTotalSoldAlbums, unlock10mTotalSoldAlbums
 } from '../ng/UnlockMedals';
+import {postScore} from '../ng/NG_Connect';
+import {fiveYearScoreID, tenYearScore} from '../config/keys';
 
 const defaultCash = 250;
 
@@ -692,8 +694,8 @@ function calculateScore({years, albums, singles, fans}) {
   score += bestSellingAlbum * 9; // best selling album added 10 times
   score += fans * 5;
 
-  console.log("SCORE", years, albums, singles, fans);
-  console.log("TOTAL SCORE", score);
+  const scoreboardID = years === 5 ? fiveYearScoreID : tenYearScore;
+  postScore(score, scoreboardID);
 
   return {
     type: SET_SCORE,

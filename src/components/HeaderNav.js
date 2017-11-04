@@ -129,13 +129,13 @@ class HeaderNav extends Component {
           {!_.isEmpty(isStart) || !hasStarted ? <NavLink to="/" className="btn btn-lg">Back to Main Menu</NavLink> : this.renderLinks()}
         </section>
         <section className="navbar section text-light">
-          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip={`${this.props.fans} Fans`}>
+          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip={`${this.props.fans.toLocaleString()} Fans`}>
             <i className="icon icon-people"/>
             <span className="left-space-1">
               {_.isNumber(this.props.fans) ? this.formatNumber(this.props.fans, false) : <div className="loading"/>}
             </span>
           </h6>
-          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip={`$${this.props.cash}`}>
+          <h6 className="centered p-2 tooltip tooltip-bottom" data-tooltip={`$${this.props.cash.toLocaleString()}`}>
             {_.isNumber(this.props.cash) ? `$${this.formatNumber(this.props.cash, true)}` : <div className="loading"/>}
           </h6>
           <h6 className="centered p-2">
