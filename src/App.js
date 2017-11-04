@@ -54,11 +54,11 @@ class App extends Component {
             <div className="modal-title h5 text-center">Played for {years} Years</div>
             <div className="modal-body">
               <div className="content">
-                Submitted score of {score}
+                Your score of {score.toLocaleString()} has been submitted.
               </div>
             </div>
             <div className="modal-footer">
-              <a href="#site" className="btn btn-link" onClick={this.hideModalScore}>Close</a>
+              <a href="#site" className="btn btn-link" onClick={this.hideModalScore}>Okay</a>
             </div>
           </div>
         </div>

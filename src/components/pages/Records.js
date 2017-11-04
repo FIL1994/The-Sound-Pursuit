@@ -19,6 +19,7 @@ class Records extends Component {
 
     this.renderSingles = this.renderSingles.bind(this);
     this.renderAlbums = this.renderAlbums.bind(this);
+    this.renderSinglesOrAlbumsSwitch = this.renderSinglesOrAlbumsSwitch.bind(this);
   }
 
   componentWillMount() {
@@ -26,6 +27,22 @@ class Records extends Component {
     this.props.getSongs();
     this.props.getSingles();
     this.props.getAlbums();
+  }
+
+  renderSinglesOrAlbumsSwitch() {
+    const {showAlbums} = this.state;
+    return(
+      <div className="form-group text-center">
+        {`Singles `}
+        <label className="form-switch">
+          <input type="checkbox"
+                 onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
+                 checked={showAlbums}
+          />
+          <i className="form-icon"/> Albums
+        </label>
+      </div>
+    );
   }
 
   renderSingles() {
@@ -45,9 +62,20 @@ class Records extends Component {
       );
     }
 
+    let totalSingleSales = 0, bestSellingSingle = {sales: 0};
+    singles.forEach(({sales, title}) => {
+      if(sales > bestSellingSingle.sales) {
+        bestSellingSingle = {sales, title};
+      }
+      totalSingleSales += sales;
+    });
+
     return(
       <div>
-        <h4 className="text-center">Singles</h4>
+        <div>
+          Total Single Sales: {totalSingleSales.toLocaleString()} <br/>
+          Best Selling Single: {`${bestSellingSingle.title} - ${bestSellingSingle.sales.toLocaleString()}`}
+        </div>
         <div className="scrollable">
           {
             singles.map(({id, title, quality, released, salesLastWeek, sales}) => {
@@ -89,9 +117,20 @@ class Records extends Component {
       );
     }
 
+    let totalAlbumSales = 0, bestSellingAlbum = {sales: 0};
+    albums.forEach(({sales, title}) => {
+      if(sales > bestSellingAlbum.sales) {
+        bestSellingAlbum = {sales, title};
+      }
+      totalAlbumSales += sales;
+    });
+
     return(
       <div>
-        <h4 className="text-center">Albums</h4>
+        <div>
+          Total Album Sales: {totalAlbumSales.toLocaleString()} <br/>
+          Best Selling Album: {`${bestSellingAlbum.title} - ${bestSellingAlbum.sales.toLocaleString()}`}
+        </div>
         <div className="scrollable">
           {
             albums.map(({id, title, quality, released, salesLastWeek, sales}) => {
@@ -118,6 +157,7 @@ class Records extends Component {
   render() {
     const {showAlbums} = this.state;
     const {singles, albums} = this.props;
+
     return(
       <div className="page container" id="page-records">
         <div className="btn-group btn-group-block centered col-2">
@@ -138,21 +178,12 @@ class Records extends Component {
               </div>
             :
               <div>
-                <div className="form-group text-center">
-                  {`Singles `}
-                  <label className="form-switch">
-                    <input type="checkbox"
-                       onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
-                       checked={showAlbums}
-                    />
-                    <i className="form-icon"/> Albums
-                  </label>
-                </div>
+                {this.renderSinglesOrAlbumsSwitch()}
                 {
                   showAlbums
-                  ?
+                    ?
                     this.renderAlbums()
-                  :
+                    :
                     this.renderSingles()
                 }
               </div>
