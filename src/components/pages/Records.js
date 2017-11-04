@@ -32,7 +32,7 @@ class Records extends Component {
   renderSinglesOrAlbumsSwitch() {
     const {showAlbums} = this.state;
     return(
-      <div className="form-group text-center">
+      <span className="form-group text-right float-right">
         {`Singles `}
         <label className="form-switch">
           <input type="checkbox"
@@ -41,7 +41,7 @@ class Records extends Component {
           />
           <i className="form-icon"/> Albums
         </label>
-      </div>
+      </span>
     );
   }
 
@@ -73,10 +73,13 @@ class Records extends Component {
     return(
       <div>
         <div>
-          Total Single Sales: {totalSingleSales.toLocaleString()} <br/>
-          Best Selling Single: {`${bestSellingSingle.title} - ${bestSellingSingle.sales.toLocaleString()}`}
+          <span className="float-left">
+            Total Single Sales: {totalSingleSales.toLocaleString()} <br/>
+            Best Selling Single: {`${bestSellingSingle.title} - ${bestSellingSingle.sales.toLocaleString()}`}
+          </span>
+          {this.renderSinglesOrAlbumsSwitch()}
         </div>
-        <div className="scrollable">
+        <div className="scrollable centered full-width">
           {
             singles.map(({id, title, quality, released, salesLastWeek, sales}) => {
               const age = week - released;
@@ -128,10 +131,13 @@ class Records extends Component {
     return(
       <div>
         <div>
-          Total Album Sales: {totalAlbumSales.toLocaleString()} <br/>
-          Best Selling Album: {`${bestSellingAlbum.title} - ${bestSellingAlbum.sales.toLocaleString()}`}
+          <span className="float-left">
+            Total Album Sales: {totalAlbumSales.toLocaleString()} <br/>
+            Best Selling Album: {`${bestSellingAlbum.title} - ${bestSellingAlbum.sales.toLocaleString()}`}
+          </span>
+          {this.renderSinglesOrAlbumsSwitch()}
         </div>
-        <div className="scrollable">
+        <div className="scrollable centered full-width">
           {
             albums.map(({id, title, quality, released, salesLastWeek, sales}) => {
               return(
@@ -178,7 +184,6 @@ class Records extends Component {
               </div>
             :
               <div>
-                {this.renderSinglesOrAlbumsSwitch()}
                 {
                   showAlbums
                     ?

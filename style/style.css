@@ -43,6 +43,10 @@ body {
     height: 530px;
 }
 
+.full-width {
+    width: 100%
+}
+
 .my-icon {
     color: white;
     font-size: 1.5em;
