@@ -17,7 +17,8 @@ import {
   unlock1mTotalSoldAlbums, unlock10mTotalSoldAlbums
 } from '../ng/UnlockMedals';
 import {postScore} from '../ng/NG_Connect';
-import {fiveYearScoreID, tenYearScore} from '../config/keys';
+import {fiveYearScoreboardID, tenYearScoreboardID, bestSellingAlbumsScoreboardID, bestSellingSinglesScoreboardID,
+  totalAlbumSalesScoreboardID, totalSingleSalesScoreboardID} from '../config/keys';
 
 const defaultCash = 250;
 
@@ -299,6 +300,8 @@ export function nextWeek(weeks) {
             }
           }
         }
+
+        postScore(singleSales, bestSellingSinglesScoreboardID);
       } else if(salesLastWeek !== 0) {
         singles[index].salesLastWeek = 0;
       }
@@ -315,6 +318,8 @@ export function nextWeek(weeks) {
         }
       }
     }
+
+    postScore(totalSingleSales, totalSingleSalesScoreboardID);
 
     albums.forEach(({released, quality, salesLastWeek}, index) => {
       const age = week - released;
@@ -339,6 +344,8 @@ export function nextWeek(weeks) {
             }
           }
         }
+
+        postScore(albumSales, bestSellingAlbumsScoreboardID);
       } else if(salesLastWeek !== 0) {
         albums[index].salesLastWeek = 0;
       }
@@ -355,6 +362,8 @@ export function nextWeek(weeks) {
         }
       }
     }
+
+    postScore(totalAlbumSales, totalAlbumSalesScoreboardID);
 
     if(!_.isEmpty(singles)) {
       dispatch(saveSingles(singles));
@@ -694,7 +703,7 @@ function calculateScore({years, albums, singles, fans}) {
   score += bestSellingAlbum * 9; // best selling album added 10 times
   score += fans * 5;
 
-  const scoreboardID = years === 5 ? fiveYearScoreID : tenYearScore;
+  const scoreboardID = years === 5 ? fiveYearScoreboardID : tenYearScoreboardID;
   postScore(score, scoreboardID);
 
   return {

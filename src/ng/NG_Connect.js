@@ -4,7 +4,8 @@
  */
 import Newgrounds from './newgroundsio';
 import {ngAppID, ngKey} from '../config/keys';
-import _ from 'lodash';
+import _ from 'lodash'
+import $ from 'jquery';
 
 let ngio = new Newgrounds.io.core(ngAppID, ngKey);
 let medals = [], scoreboards = [], sessionStarted = false, medalsLoaded = false;
@@ -51,8 +52,33 @@ export function getDateTime() {
 
 function onMedalUnlocked(medal) {
   console.log(`Unlocked: ${medal.unlocked}`);
+  const {icon, name} = medal;
 
   // show medal
+  let medalHTML = `
+    <div class='unlocked-medal'>
+      <div class='toast medal-shadow'>
+        <img src='${icon}'>
+        <span class='float-right left-space-1'>
+          <b>Medal Unlocked</b> <br/>
+          ${name}
+        </span>
+      </div>
+    </div>
+  `;
+
+  let ngMedal = $('#ng-medal');
+  // check if the ngMedal element exists
+  if(ngMedal.length === 0) {
+    $('body').append(`<div id='ng-medal'>${medalHTML}</div>`);
+  } else {
+    ngMedal.html(medalHTML);
+  }
+
+  // in 2 seconds hide the medal toast
+  setTimeout(() => {
+    $('#ng-medal').html('');
+  }, 2000);
 }
 
 export function unlockMedal(medalName) {
@@ -74,7 +100,6 @@ export function unlockMedal(medalName) {
       if(success) {
         onMedalUnlocked(newMedal);
         medal.unlocked = true; // store locally to avoid calling API if the medal is already unlocked
-        console.log(medal, medals);
       }
     }, this);
   }

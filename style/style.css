@@ -63,6 +63,15 @@ body {
     color: #5755d9;
 }
 
+.unlocked-medal {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.medal-shadow {
+    box-shadow: -1px -1px 2px #999999;
+}
+
 /*Overrides*/
 .is-error {
     color: #e85600;
