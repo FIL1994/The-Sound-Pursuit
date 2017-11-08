@@ -445,14 +445,6 @@ class ReleaseRecord extends Component {
 
     return (
       <div className="page container" id="page-records">
-        <ul className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/records/">Records</Link>
-          </li>
-          <li className="breadcrumb-item">
-            Release
-          </li>
-        </ul>
         <div className="centered text-center">
           <div className="btn-group btn-group-block centered col-4">
             <button type="button" className={`btn btn-lg ${isSingle ? 'btn-primary' : ''}`}

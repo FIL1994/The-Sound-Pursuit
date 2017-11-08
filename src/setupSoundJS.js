@@ -27,8 +27,8 @@ if (_.isEmpty(window.songPlaying)) {
           // make sure there is only one song playing
           try {
             window.songPlaying.destroy();
-          } catch (e) {
-          }
+          } catch (e) {}
+
           try {
             localForage.getItem(PLAY_MAIN_THEME).then(playMainTheme => {
               // if playMainTheme isn't empty and is false play the DeepThinker song
@@ -43,18 +43,18 @@ if (_.isEmpty(window.songPlaying)) {
                 // if playMainTheme is empty or false play the main theme
                 window.songPlaying = createjs.Sound.play(SONGS.PianoLoop.id, {loop: -1, volume: window.VOLUME});
               }
-            });
-
-            if (playSong) {
-              if (playSong !== "on") {
-                window.songPlaying.stop();
+            }).then(() => {
+              if (playSong) {
+                if (playSong !== "on") {
+                  window.songPlaying.stop();
+                }
+              } else {
+                localForage.setItem(PLAY_SONG, "on");
               }
-            } else {
-              localForage.setItem(PLAY_SONG, "on");
-            }
-            if (window.songPlaying.playState !== "playFailed") {
-              songStarted = true;
-            }
+              if (window.songPlaying.playState === "playSucceeded") {
+                songStarted = true;
+              }
+            });
           } catch (e) {
             console.log("Song Start Error: ", e);
           }

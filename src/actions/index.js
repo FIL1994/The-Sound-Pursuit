@@ -227,12 +227,12 @@ export function nextWeek(weeks) {
                    singles = newData.singles;
                    fans = newData.fans;
 
-                   if(week >= 52 * 5) {
+                   if(parseInt(week) === parseInt(52 * 5)) {
                      years5 = true;
                      setTimeout(() => {
                        dispatch(calculateScore({years: 5, albums, singles, fans}));
                      });
-                   } else if(week === 52 * 10) {
+                   } else if(parseInt(week) === parseInt(52 * 10)) {
                      years10 = true;
                      setTimeout(() => {
                        dispatch(calculateScore({years: 10, albums, singles, fans}));
@@ -304,6 +304,7 @@ export function nextWeek(weeks) {
         postScore(singleSales, bestSellingSinglesScoreboardID);
       } else if(salesLastWeek !== 0) {
         singles[index].salesLastWeek = 0;
+        postScore(singles[index].sales, bestSellingSinglesScoreboardID);
       }
       totalSingleSales += singles[index].sales;
     });
@@ -348,6 +349,7 @@ export function nextWeek(weeks) {
         postScore(albumSales, bestSellingAlbumsScoreboardID);
       } else if(salesLastWeek !== 0) {
         albums[index].salesLastWeek = 0;
+        postScore(albums[index].sales, bestSellingAlbumsScoreboardID);
       }
       totalAlbumSales += albums[index].sales;
     });
@@ -680,7 +682,7 @@ export function addAlbum(album) {
 // START SCORE
 
 function calculateScore({years, albums, singles, fans}) {
-  let score = 0, albumSales = 0, singleSales = 0, bestSellingAlbum = 0, bestSellingSingle = 0;
+  let albumSales = 0, singleSales = 0, bestSellingAlbum = 0, bestSellingSingle = 0;
 
   // total single sales
   singles.forEach(({sales}) => {
@@ -698,13 +700,15 @@ function calculateScore({years, albums, singles, fans}) {
     }
   });
 
-  score = singleSales + albumSales;
+  let score = singleSales + albumSales;
   score += bestSellingSingle * 4; // best selling single added 5 times
   score += bestSellingAlbum * 9; // best selling album added 10 times
   score += fans * 5;
 
-  const scoreboardID = years === 5 ? fiveYearScoreboardID : tenYearScoreboardID;
-  postScore(score, scoreboardID);
+  const scoreboardID = (years === 5) ? fiveYearScoreboardID : tenYearScoreboardID;
+  setTimeout(() => {
+    postScore(score, scoreboardID);
+  });
 
   return {
     type: SET_SCORE,

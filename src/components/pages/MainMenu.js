@@ -64,7 +64,7 @@ class MainMenu extends Component {
 
     return(
       <div className="page container centered text-center">
-        <h2>Main Menu</h2>
+        <h1>The Sound Pursuit</h1>
         <div className="divider"/>
         <div className="spaced">
           <div className="btn-group btn-group-block centered col-8">
@@ -85,6 +85,29 @@ class MainMenu extends Component {
             <button type="button" {...resetProps} onClick={this.resetData}>
               Delete Save
             </button>
+          </div>
+        </div>
+        <br/>
+        <div className="centered text-center">
+          <div className="parallax centered text-center width-190">
+            <div className="parallax-top-left"/>
+            <div className="parallax-top-right"/>
+            <div className="parallax-bottom-left"/>
+            <div className="parallax-bottom-right"/>
+            <div className="parallax-content">
+              <div className="parallax-front">
+              </div>
+              <div className="parallax-back">
+                <img src="https://www.newgrounds.com/img/misc/dl-official.gif" className="img-responsive rounded"/>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div>
+            <b>Programming:</b> <a href="https://fil1994.newgrounds.com/" target="_blank">FIL1994</a>
+            <br/>
+            <b>Music:</b> <a href="https://sercati.newgrounds.com/" target="_blank">Sercati</a> {`and `}
+            <a href="https://noise4games.newgrounds.com/" target="_blank">Noise4Games</a>
           </div>
         </div>
         {

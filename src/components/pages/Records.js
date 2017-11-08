@@ -29,6 +29,13 @@ class Records extends Component {
     this.props.getAlbums();
   }
 
+  componentDidUpdate() {
+    // fixes bug where window scrolls down
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    });
+  }
+
   renderSinglesOrAlbumsSwitch() {
     const {showAlbums} = this.state;
     return(

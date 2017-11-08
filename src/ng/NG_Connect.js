@@ -106,14 +106,16 @@ export function unlockMedal(medalName) {
 }
 
 function onScorePosted(result) {
-  console.log(`Score of ${result.score.value} was successfully posted`);
+  // console.log(`Score of ${result.score.value} was successfully posted`);
 }
 
 export function postScore(score, id) {
   if(!ngio.user) {
     return;
   }
-  console.log(`Posting score of ${score}`);
+  score = parseInt(Number(score));
+  id = parseInt(id);
+
   ngio.callComponent("ScoreBoard.postScore", {id, value: score}, (result) => {
     if(result.success) {
       onScorePosted(result);

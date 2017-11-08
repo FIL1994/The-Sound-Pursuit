@@ -51,9 +51,10 @@ class App extends Component {
         <div className="modal-container">
           <div className="modal-header">
             <a href="#site" className="btn btn-clear float-right" aria-label="Close" onClick={this.hideModalScore}/>
-            <div className="modal-title h5 text-center">Played for {years} Years</div>
+            <div className="modal-title h5 text-center">Been Around for {years} Years</div>
             <div className="modal-body">
               <div className="content">
+                You band has latest {years} years! <br/>
                 Your score of {score.toLocaleString()} has been submitted.
               </div>
             </div>

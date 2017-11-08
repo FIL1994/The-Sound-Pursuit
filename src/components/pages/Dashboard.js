@@ -105,7 +105,7 @@ class Dashboard extends Component {
       practicesToLevelUp = _.ceil(totalPractices/25);
       // increment value but only allow a maximum of 100
       function incrementMax100(val) {
-        return _.min([val + 1, 100]);
+        return Number(_.min([val + 1, 100]));
       }
       // Increase members' and lead member's skills
       members = members.map((m) => {
@@ -122,28 +122,28 @@ class Dashboard extends Component {
       leadMember.skills.musicianship = incrementMax100(leadMember.skills.musicianship);
       leadMember.skills.songwriting = incrementMax100(leadMember.skills.songwriting);
       leadMember.skills.studio = incrementMax100(leadMember.skills.studio);
+    }
 
-      // check skill medals
-      let liveSkills = [], musicianshipSkills = [], songwritingSkills = [], studioSkills = [];
-      [leadMember, ...members].forEach(({skills: {live, musicianship, songwriting, studio}}) => {
-        liveSkills.push(live);
-        musicianshipSkills.push(musicianship);
-        songwritingSkills.push(songwriting);
-        studioSkills.push(studio);
-      });
-      if(_.min(liveSkills) > 25 && _.min(musicianshipSkills) > 25
-        && _.min(songwritingSkills) > 25 && _.min(studioSkills) > 25) {
-        unlockSkills25();
-        if(_.min(liveSkills) > 50 && _.min(musicianshipSkills) > 50
-          && _.min(songwritingSkills) > 50 && _.min(studioSkills) > 50) {
-          unlockSkills50();
-          if(_.min(liveSkills) > 75 && _.min(musicianshipSkills) > 75
-            && _.min(songwritingSkills) > 75 && _.min(studioSkills) > 75) {
-            unlockSkills75();
-          }
+    // check skill medals
+    let liveSkills = [], musicianshipSkills = [], songwritingSkills = [], studioSkills = [];
+    [leadMember, ...members].forEach(({skills: {live, musicianship, songwriting, studio}}) => {
+      liveSkills.push(live);
+      musicianshipSkills.push(musicianship);
+      songwritingSkills.push(songwriting);
+      studioSkills.push(studio);
+    });
+
+    if(_.min(liveSkills) >= 25 && _.min(musicianshipSkills) >= 25
+      && _.min(songwritingSkills) >= 25 && _.min(studioSkills) >= 25) {
+      unlockSkills25();
+      if(_.min(liveSkills) >= 50 && _.min(musicianshipSkills) >= 50
+        && _.min(songwritingSkills) >= 50 && _.min(studioSkills) >= 50) {
+        unlockSkills50();
+        if(_.min(liveSkills) >= 75 && _.min(musicianshipSkills) >= 75
+          && _.min(songwritingSkills) >= 75 && _.min(studioSkills) >= 75) {
+          unlockSkills75();
         }
       }
-
     }
 
     const progress = _.ceil((practices / practicesToLevelUp) * 100);
@@ -225,7 +225,7 @@ class Dashboard extends Component {
             <h3>{band.name}</h3>
             <div className="divider"/>
             <div className="centered text-center">
-              <div className="btn-group btn-group-block centered col-2">
+              <div className="btn-group btn-group-block centered col-4">
                 <button type="button" className="btn btn-lg" onClick={this.playShow}>
                   Play Show
                 </button>

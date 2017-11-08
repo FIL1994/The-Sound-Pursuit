@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const isProduction = process.env.NODE_ENV === "production";
 
-prodProps = !isProduction ? [] : [
+const prodProps = !isProduction ? [] : [
   new webpack.optimize.ModuleConcatenationPlugin(),
   new webpack.optimize.UglifyJsPlugin({
     mangle: {},
@@ -20,6 +20,7 @@ prodProps = !isProduction ? [] : [
 
 module.exports = {
   entry: [
+    'babel-polyfill',
     './src/index.js'
   ],
   output: {
@@ -33,7 +34,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015', 'stage-1']
+          presets: ['react', 'env', 'stage-1']
         }
       },
       {

@@ -42,6 +42,13 @@ class Songs extends Component {
     this.props.getWeek();
   }
 
+  componentDidUpdate() {
+    // fixes bug where window scrolls down
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    });
+  }
+
   handleSort(clickedColumn) {
     let {column, sortAsc} = this.state;
 
@@ -478,8 +485,8 @@ class Songs extends Component {
           ?
             this.renderEmpty()
           :
-            <div className="col-10 centered">
-              <h5 className="text-left">Unreleased Songs: {usableSongs.length}</h5>
+            <div className="col-12 centered">
+              <p className="text-left">Unreleased Songs: {usableSongs.length}</p>
               <br/>
               <div className="scrollable">
                 {this.renderSongList()}
