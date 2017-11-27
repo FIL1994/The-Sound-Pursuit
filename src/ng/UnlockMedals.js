@@ -2,7 +2,7 @@
  * @author Philip Van Raalte
  * @date 2017-10-21.
  */
-import {unlockMedal} from "./NG_Connect";
+import {unlockMedal} from './NG_Connect';
 
 export function unlockStartBand() {
   unlockMedal("Start a Band");

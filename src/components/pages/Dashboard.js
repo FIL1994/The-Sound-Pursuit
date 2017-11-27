@@ -17,8 +17,8 @@ class Dashboard extends Component {
     super(props);
 
     this.renderMembers = this.renderMembers.bind(this);
-    this.playShow = this.playShow.bind(this);
-    this.practice = this.practice.bind(this);
+    this.playShow = _.throttle(this.playShow.bind(this), 55);
+    this.practice = _.throttle(this.practice.bind(this), 55);
 
     this.state = {
       showShow: false,
