@@ -8,7 +8,7 @@ if (_.isEmpty(window.songPlaying)) {
   console.log("Starting");
   window.VOLUME = 1;
 
-  const assetPath = "/assets/";
+  const assetPath = "assets/";
   const sounds = [
     {id: SONGS.DeepThinkerIntro.id, src: SONGS.DeepThinkerIntro.src},
     {id: SONGS.DeepThinker.id, src: SONGS.DeepThinker.src},
