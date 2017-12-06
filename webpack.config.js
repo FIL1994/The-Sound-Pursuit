@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = String(process.env.NODE_ENV).includes("production");
 
 const prodProps = !isProduction ? [] : [
   new webpack.optimize.ModuleConcatenationPlugin(),
