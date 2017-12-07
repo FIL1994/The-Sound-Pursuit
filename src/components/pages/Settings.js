@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import _ from 'lodash';
+import {Page} from '../SpectreCSS';
 import localForage, {PLAY_SONG, PLAY_MAIN_THEME, SONG_VOLUME}
   from '../../data/localForage';
 import SONGS from '../../data/Songs';
@@ -74,7 +75,7 @@ class Settings extends Component {
     });
     const newVolume = volume / 100;
     window.VOLUME = newVolume;
-    window.songPlaying.setVolume(newVolume);
+    window.songPlaying.volume = newVolume;
 
     localForage.setItem(SONG_VOLUME, newVolume);
   }
@@ -107,7 +108,7 @@ class Settings extends Component {
     const {songID, volume} = this.state;
 
     return(
-      <div className="page container centered text-center">
+      <Page className="centered text-center">
         <h3>Settings</h3>
         <div className="col-8 centered text-center">
           <form>
@@ -143,7 +144,7 @@ class Settings extends Component {
             </div>
           </form>
         </div>
-      </div>
+      </Page>
     );
   }
 }

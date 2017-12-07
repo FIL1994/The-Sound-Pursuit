@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import $ from 'jquery';
 import _ from 'lodash';
+import {Page} from '../SpectreCSS';
 
 import INSTRUMENTS from '../../data/instruments';
 import getRandomBandName from '../../data/randomBandName';
@@ -557,7 +558,7 @@ class Start extends Component {
 
   render() {
     return(
-      <div className="page container">
+      <Page>
         <div className="panel scrollable start">
           <div className="centered col-10 panel-body">
             {this.renderSteps()}
@@ -566,7 +567,7 @@ class Start extends Component {
             {this.renderForm()}
           </div>
         </div>
-      </div>
+      </Page>
     );
   }
 }

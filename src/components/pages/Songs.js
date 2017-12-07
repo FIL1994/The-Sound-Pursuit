@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 
 import $ from 'jquery';
 import _ from 'lodash';
+import {Page} from '../SpectreCSS';
 import getRandomSongName from '../../data/randomSongName';
 import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong, getWeek, nextWeek} from '../../actions';
 import studios from '../../data/studios';
@@ -469,7 +470,7 @@ class Songs extends Component {
     const usableSongs = this.getUsableSongs(songs);
 
     return(
-      <div className="page container" id="page-songs">
+      <Page id="page-songs">
         <div className="centered text-center">
           <div className="btn-group btn-group-block centered col-2">
             <a href="#modal-write-song" className="btn btn-lg btn-primary">
@@ -493,7 +494,7 @@ class Songs extends Component {
               </div>
             </div>
         }
-      </div>
+      </Page>
     );
   }
 }

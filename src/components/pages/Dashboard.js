@@ -2,9 +2,10 @@
  * @author Philip Van Raalte
  * @date 2017-10-07.
  */
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import _ from 'lodash';
+import {Page, Button, Toast, Divider} from '../SpectreCSS';
 
 import {getBand, saveBand, getFans, addFans, getCash, addCash, getWeek, nextWeek} from '../../actions';
 import {
@@ -203,7 +204,7 @@ class Dashboard extends Component {
                     Songwriting: {m.skills.songwriting} |
                     Studio: {m.skills.studio}
                   </p>
-                  <div className="col-6 centered divider"/>
+                  <Divider size={7}/>
                 </div>
               </li>
             );
@@ -218,41 +219,39 @@ class Dashboard extends Component {
     const {showShow, showPractice, newFans, newCash, practiceToast} = this.state;
 
     return(
-      <div className="page container">
+      <Page className="text-center">
         {
           _.isEmpty(band) ? null :
-          <div className="text-center">
+          <Fragment>
             <h3>{band.name}</h3>
-            <div className="divider"/>
+            <Divider size={9}/>
             <div className="centered text-center">
-              <div className="btn-group btn-group-block centered col-4">
-                <button type="button" className="btn btn-lg" onClick={this.playShow}>
-                  Play Show
-                </button>
-                <button type="button" className="btn btn-lg" onClick={this.practice}>
-                  Practice
-                </button>
-              </div>
+              <Button size={4} large onClick={this.playShow}>
+                Play Show
+              </Button>
+              <Button size={4} large onClick={this.practice}>
+                Practice
+              </Button>
               <div className="centered col-3">
                 {
                   !showShow ? null :
-                  <div className="toast centered text-center">
+                  <Toast centered>
                     <span>New Fans: {newFans}<br/>Cash: ${newCash}</span>
-                  </div>
+                  </Toast>
                 }
                 {
                   !showPractice ? null :
-                    <div className="toast">
+                    <Toast centered>
                       {practiceToast}
-                    </div>
+                    </Toast>
                 }
               </div>
             </div>
             <br/>
             {this.renderMembers()}
-          </div>
+          </Fragment>
         }
-      </div>
+      </Page>
     );
   }
 }

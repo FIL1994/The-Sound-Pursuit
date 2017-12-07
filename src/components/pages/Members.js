@@ -4,16 +4,17 @@
  */
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import {Page} from '../SpectreCSS';
 
 class Members extends Component {
   render() {
     return (
-      <div className="page container">
+      <Page>
         <h3>Members</h3>
         <Link to="/">
           Home
         </Link>
-      </div>
+      </Page>
     );
   }
 }

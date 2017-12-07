@@ -2,128 +2,161 @@
  * @author Philip Van Raalte
  * @date 2017-10-21.
  */
-import {unlockMedal} from './NG_Connect';
+import _ from 'lodash';
+import {unlockMedal, getMedals, getUser} from './NG_Connect';
+
+const medalTimeoutShort = 350;
+const medalTimeoutLong = 2000;
+
+function forceUnlockMedal(medalName) {
+  if(!_.isString(medalName)) {
+    return;
+  }
+  unlockThisMedal();
+
+  function unlockThisMedal() {
+    console.log("unlock", medalName);
+    getMedals((result) => {
+      if(result.success) {
+        let medal = result.medals.find((m) => {
+          return m.name === medalName;
+        });
+        const isUser = !_ .isEmpty(getUser());
+        if(isUser) {
+          if (!medal.unlocked) {
+            unlockMedal(medalName);
+            setTimeout(unlockThisMedal, medalTimeoutShort);
+          }
+          else {
+            // An error occurred wait longer before making another network request
+            setTimeout(unlockThisMedal, medalTimeoutLong);
+          }
+        }
+      }
+    });
+  }
+}
 
 export function unlockStartBand() {
-  unlockMedal("Start a Band");
+  forceUnlockMedal("Start a Band");
 }
 
 export function unlockReleaseSingle() {
-  unlockMedal("Release a Single");
+  forceUnlockMedal("Release a Single");
 }
 
 export function unlockReleaseAlbum() {
-  unlockMedal("Release an Album");
+  forceUnlockMedal("Release an Album");
 }
 
 export function unlockWriteSong() {
-  unlockMedal("Write a Song");
+  forceUnlockMedal("Write a Song");
 }
 
 export function unlockRecordSong() {
-  unlockMedal("Record a Song");
+  forceUnlockMedal("Record a Song");
 }
 
 export function unlockFirstShow() {
-  unlockMedal("First Show");
+  forceUnlockMedal("First Show");
 }
 
 export function unlockFirstPractice() {
-  unlockMedal("First Practice");
+  forceUnlockMedal("First Practice");
 }
 
 export function unlock5Years() {
-  unlockMedal("5 Years");
+  forceUnlockMedal("5 Years");
 }
 
 export function unlock10Years() {
-  unlockMedal("10 Years");
+  forceUnlockMedal("10 Years");
 }
 
 export function unlock25Years() {
-  unlockMedal("25 Years");
+  forceUnlockMedal("25 Years");
 }
 
 export function unlock1kFans() {
-  unlockMedal("1K Fans");
+  forceUnlockMedal("1K Fans");
 }
 
 export function unlock10kFans() {
-  unlockMedal("10K Fans");
+  forceUnlockMedal("10K Fans");
 }
 
 export function unlock100kFans() {
-  unlockMedal("100K Fans");
+  forceUnlockMedal("100K Fans");
 }
 
 export function unlock1mFans() {
-  unlockMedal("1M Fans");
+  forceUnlockMedal("1M Fans");
 }
 
 export function unlock10kSoldSingles() {
-  unlockMedal("10K Sold Singles");
+  forceUnlockMedal("10K Sold Singles");
 }
 
 export function unlock100kSoldSingles() {
-  unlockMedal("100K Sold Singles");
+  forceUnlockMedal("100K Sold Singles");
 }
 
 export function unlock1mSoldSingles() {
-  unlockMedal("1M Sold Singles");
+  forceUnlockMedal("1M Sold Singles");
 }
 
 export function unlock10kSoldAlbums() {
-  unlockMedal("10K Sold Albums");
+  forceUnlockMedal("10K Sold Albums");
 }
 
 export function unlock100kSoldAlbums() {
-  unlockMedal("100K Sold Albums");
+  forceUnlockMedal("100K Sold Albums");
 }
 
 export function unlock1mSoldAlbums() {
-  unlockMedal("1M Sold Albums");
+  forceUnlockMedal("1M Sold Albums");
 }
 
 export function unlock100kTotalSoldSingles() {
-  unlockMedal("100K Total Sold Singles");
+  forceUnlockMedal("100K Total Sold Singles");
 }
 
 export function unlock1mTotalSoldSingles() {
-  unlockMedal("1M Total Sold Singles");
+  forceUnlockMedal("1M Total Sold Singles");
 }
 
 export function unlock10mTotalSoldSingles() {
-  unlockMedal("10M Total Sold Singles");
+  forceUnlockMedal("10M Total Sold Singles");
 }
 
 export function unlock100kTotalSoldAlbums() {
-  unlockMedal("100K Total Sold Albums");
+  forceUnlockMedal("100K Total Sold Albums");
 }
 
 export function unlock1mTotalSoldAlbums() {
-  unlockMedal("1M Total Sold Albums");
+  forceUnlockMedal("1M Total Sold Albums");
 }
 
 export function unlock10mTotalSoldAlbums() {
-  unlockMedal("10M Total Sold Albums");
+  forceUnlockMedal("10M Total Sold Albums");
 }
 
 export function unlock100NewFans() {
- unlockMedal("100 New Fans");
+  forceUnlockMedal("100 New Fans");
 }
 
 export function unlock200NewFans() {
-  unlockMedal("200 New Fans");
+  forceUnlockMedal("200 New Fans");
 }
 
 export function unlockSkills25() {
-  unlockMedal("Skills 25+");
+  forceUnlockMedal("Skills 25+");
 }
 
 export function unlockSkills50() {
-  unlockMedal("Skills 50+");
+  forceUnlockMedal("Skills 50+");
 }
 
 export function unlockSkills75() {
-  unlockMedal("Skills 75+");
+  forceUnlockMedal("Skills 75+");
 }

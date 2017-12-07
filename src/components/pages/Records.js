@@ -5,8 +5,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-
 import _ from 'lodash';
+import {Page} from '../SpectreCSS';
+
 import {getSongs, getSingles, getAlbums, getWeek} from '../../actions';
 
 class Records extends Component {
@@ -172,7 +173,7 @@ class Records extends Component {
     const {singles, albums} = this.props;
 
     return(
-      <div className="page container" id="page-records">
+      <Page id="page-records">
         <div className="btn-group btn-group-block centered col-2">
           <Link to="/records/release" className="btn btn-lg btn-primary">
             Release New Record
@@ -201,7 +202,7 @@ class Records extends Component {
               </div>
           }
         </div>
-      </div>
+      </Page>
     );
   }
 }

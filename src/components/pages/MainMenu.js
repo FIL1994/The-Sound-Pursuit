@@ -6,6 +6,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import _ from 'lodash';
+import {Page} from '../SpectreCSS';
+
 import {getBand} from '../../actions';
 import {resetDataAsync} from '../../data/resetData';
 
@@ -63,7 +65,7 @@ class MainMenu extends Component {
         };
 
     return(
-      <div className="page container centered text-center">
+      <Page className="centered text-center">
         <h1>The Sound Pursuit</h1>
         <div className="divider"/>
         <div className="spaced">
@@ -119,7 +121,7 @@ class MainMenu extends Component {
             :
               ''
         }
-      </div>
+      </Page>
     );
   }
 }

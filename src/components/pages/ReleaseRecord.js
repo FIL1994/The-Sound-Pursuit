@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
 import _ from 'lodash';
+import {Page} from '../SpectreCSS';
 import {getBand, getCash, saveCash, getSongs, updateSong, saveSongs, getSingles, addSingle, getAlbums, addAlbum,
   removeCash, nextWeek, getWeek} from '../../actions';
 import getRandomSongName from '../../data/randomSongName';
@@ -444,7 +445,7 @@ class ReleaseRecord extends Component {
     }
 
     return (
-      <div className="page container" id="page-records">
+      <Page id="page-records">
         <div className="centered text-center">
           <div className="btn-group btn-group-block centered col-4">
             <button type="button" className={`btn btn-lg ${isSingle ? 'btn-primary' : ''}`}
@@ -461,7 +462,7 @@ class ReleaseRecord extends Component {
         </div>
         <br/>
         {this.renderPanel()}
-      </div>
+      </Page>
     );
   }
 }

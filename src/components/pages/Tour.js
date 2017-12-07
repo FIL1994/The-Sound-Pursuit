@@ -3,17 +3,15 @@
  * @date 2017-10-11.
  */
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-
-import _ from 'lodash';
+import {Page, Button} from '../SpectreCSS';
 
 class Tour extends Component {
   render() {
     return(
-      <div className="page container">
+      <Page>
         <div className="centered text-center">
-          <button type="button" className="btn btn-lg btn-primary">Go on Tour</button>
+          <Button large primary>Go on Tour</Button>
         </div>
         <div className="empty">
           <div className="empty-icon">
@@ -24,7 +22,7 @@ class Tour extends Component {
             <Link to="/songs" className="btn btn-primary">Go to Songs</Link>
           </div>
         </div>
-      </div>
+      </Page>
     );
   }
 }
