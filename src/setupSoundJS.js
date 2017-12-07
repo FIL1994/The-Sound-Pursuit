@@ -5,7 +5,6 @@ import SONGS from './data/Songs';
 
 // prevent starting multiple songs
 if (_.isEmpty(window.songPlaying)) {
-  console.log("Starting");
   window.VOLUME = 1;
 
   const assetPath = "assets/";

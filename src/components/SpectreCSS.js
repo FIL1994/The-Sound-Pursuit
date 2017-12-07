@@ -6,7 +6,7 @@
  *
  * Functional components for the Spectre CSS library.
  */
-import React from 'react';
+import React, {Fragment} from 'react';
 import _ from 'lodash';
 
 /**
@@ -26,8 +26,9 @@ function addClass(defaultClass, newClass) {
  * @constructor
  */
 let Button = (props) => {
-  const {small, large, block, primary} = props;
+  const {small, large, block, primary, centered, disabled} = props;
   let className = "btn";
+  let otherProps = {};
 
   // allow size to be passed as a string or a number
   if(!_.isEmpty(props.size) || _.isNumber(props.size)) {
@@ -48,13 +49,23 @@ let Button = (props) => {
     className = addClass(className, "btn-primary");
   }
 
+  if(centered) {
+    className = addClass(className, "centered text-center");
+  }
+
+  if(disabled) {
+    otherProps.disabled = true;
+    otherProps.tabIndex = "-1";
+    className = addClass(className, "disabled");
+  }
+
   // add the className prop to the className
   className = addClass(className, props.className);
 
   // remove unnecessary props
-  let myProps = _.omit(props, ['small', 'large', 'block', 'primary']);
+  let myProps = _.omit(props, ['small', 'large', 'block', 'primary', 'centered', 'disabled']);
 
-  return <button {...myProps} className={className}/>;
+  return <button {...myProps} {...otherProps} className={className}/>;
 };
 
 Button.defaultProps = {
@@ -190,13 +201,17 @@ export const Panel = (props) => {
   // remove unnecessary props
   let myProps = _.omit(props, ['children', 'title', 'footer']);
 
+  let header =_.isEmpty(title) ? <Fragment/> : (
+    <div className="panel-header">
+      <div className="panel-title">
+        <h5>{title}</h5>
+      </div>
+    </div>
+  );
+
   return (
     <div {...myProps} className={className}>
-      <div className="panel-header">
-        <div className="panel-title">
-          <h5>{title}</h5>
-        </div>
-      </div>
+      {header}
       <div className="panel-body">
         {children}
       </div>
@@ -214,16 +229,25 @@ export const Panel = (props) => {
  * @constructor
  */
 export const EmptyState = (props) => {
-  const {children, title} = props;
+  const {children, title, icon} = props;
 
   // add the className prop to the className
   let className = addClass("empty", props.className);
 
   // remove unnecessary props
-  let myProps = _.omit(props, ['children', 'title']);
+  let myProps = _.omit(props, ['children', 'title', 'icon']);
 
   return(
     <div {...myProps} className={className}>
+      {
+        _.isEmpty(icon)
+          ?
+            ''
+          :
+            <div className="empty-icon">
+              {icon}
+            </div>
+      }
       <div className="empty-title h5">{title}</div>
       <div className="empty-action">
         {children}

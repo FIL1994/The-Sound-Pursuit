@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import _ from 'lodash';
-import {Page} from '../SpectreCSS';
+import {Page, Button} from '../SpectreCSS';
 import localForage, {PLAY_SONG, PLAY_MAIN_THEME, SONG_VOLUME}
   from '../../data/localForage';
 import SONGS from '../../data/Songs';
@@ -134,12 +134,14 @@ class Settings extends Component {
             </div>
             <br/>
             <div>
-              <button type="button" className="btn btn-lg" onClick={this.toggleMusic}>Toggle Music</button>
+              <Button large onClick={this.toggleMusic}>Toggle Music</Button>
             </div>
             <br/>
             <div>
-              <Link to="/" className="btn btn-lg btn-primary">
-                Go to Main Menu
+              <Link to="/">
+                <Button large primary>
+                  Go to Main Menu
+                </Button>
               </Link>
             </div>
           </form>

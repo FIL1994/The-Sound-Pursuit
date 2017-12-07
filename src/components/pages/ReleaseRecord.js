@@ -2,14 +2,14 @@
  * @author Philip Van Raalte
  * @date 2017-10-16.
  */
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 
 import $ from 'jquery';
 import _ from 'lodash';
-import {Page} from '../SpectreCSS';
+import {Page, Button, EmptyState, Panel, Divider} from '../SpectreCSS';
 import {getBand, getCash, saveCash, getSongs, updateSong, saveSongs, getSingles, addSingle, getAlbums, addAlbum,
   removeCash, nextWeek, getWeek} from '../../actions';
 import getRandomSongName from '../../data/randomSongName';
@@ -161,11 +161,11 @@ class ReleaseRecord extends Component {
             <label className="form-label" htmlFor="txtAlbumTitle">Album Title:</label>
             <div className="input-group">
               <input className="form-input" type="text" id="txtAlbumTitle" placeholder="Album Title"/>
-              <button className="btn input-group-btn" type="button"
+              <Button className="input-group-btn" type="button"
                 onClick={() => {$('#txtAlbumTitle').val(getRandomSongName())}}
               >
                 Random
-              </button>
+              </Button>
             </div>
           </div>
           <div>
@@ -383,47 +383,43 @@ class ReleaseRecord extends Component {
 
     //default content if enough songs are eligible
     pageContent = (
-      <div className="panel scrollable">
-        <form className="centered col-10 panel-body">
+      <Panel className="scrollable">
+        <form className="centered col-10">
           {this.renderSongList(this.props.songs)}
-          <div className="divider"/>
+          <Divider/>
           {this.renderProducers()}
           {this.renderProducerDetails()}
-          <button
-            type="button"
-            className="text-center centered btn btn-lg btn-primary"
-            onClick={submitValidate}
-          >
+          <Button centered large primary onClick={submitValidate}>
             Release
-          </button>
+          </Button>
         </form>
-      </div>
+      </Panel>
     );
 
     if(isSingle && this.getSongsEligibleForSingle(songs).length < 1) {
       pageContent = (
-        <div className="empty">
-          <div className="empty-icon">
-            <i className="fa fa-music fa-4x"/>
-          </div>
-          <p className="empty-title h5">
-            You don't have a song that is eligible for a single.<br/>
-            Go to the <Link to={"/songs"}>Songs page</Link> and write and record a new song.
-          </p>
-        </div>
+        <EmptyState
+          icon={<i className="fa fa-music fa-4x"/>}
+          title={
+            <Fragment>
+              You don't have a song that is eligible for a single.<br/>
+              Go to the <Link to={"/songs"}>Songs page</Link> and write and record a new song.
+            </Fragment>
+          }
+        />
       );
     } else if(!isSingle && this.getSongsEligibleForAlbum(songs).length < 8) {
       pageContent = (
-        <div className="empty">
-          <div className="empty-icon">
-            <i className="fa fa-music fa-4x"/>
-          </div>
-          <p className="empty-title h5">
-            You don't have enough songs that are eligible for an album.<br/>
-            You have {this.getSongsEligibleForAlbum(songs).length} songs that are eligible. You need at least 8.<br/>
-            Go to the <Link to={"/songs"}>Songs page</Link> and write and record some new songs.
-          </p>
-        </div>
+        <EmptyState
+          icon={<i className="fa fa-music fa-4x"/>}
+          title={
+            <Fragment>
+              You don't have enough songs that are eligible for an album.<br/>
+              You have {this.getSongsEligibleForAlbum(songs).length} songs that are eligible. You need at least 8.<br/>
+              Go to the <Link to={"/songs"}>Songs page</Link> and write and record some new songs.
+            </Fragment>
+          }
+        />
       );
     }
 
@@ -448,16 +444,16 @@ class ReleaseRecord extends Component {
       <Page id="page-records">
         <div className="centered text-center">
           <div className="btn-group btn-group-block centered col-4">
-            <button type="button" className={`btn btn-lg ${isSingle ? 'btn-primary' : ''}`}
+            <Button large primary={isSingle}
               onClick={() => {this.changedProducer(true); this.setState({isSingle: true});}}
             >
               Single
-            </button>
-            <button type="button" className={`btn btn-lg ${isSingle ? '' : 'btn-primary'}`}
+            </Button>
+            <Button large primary={!isSingle}
               onClick={() => {this.changedProducer(false); this.setState({isSingle: false})}}
             >
               Album
-            </button>
+            </Button>
           </div>
         </div>
         <br/>

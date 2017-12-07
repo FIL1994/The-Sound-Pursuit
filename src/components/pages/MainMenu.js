@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import _ from 'lodash';
-import {Page} from '../SpectreCSS';
+import {Button, Divider, Page, Parallax, Toast} from '../SpectreCSS';
 
 import {getBand} from '../../actions';
 import {resetDataAsync} from '../../data/resetData';
@@ -67,43 +67,29 @@ class MainMenu extends Component {
     return(
       <Page className="centered text-center">
         <h1>The Sound Pursuit</h1>
-        <div className="divider"/>
+        <Divider/>
         <div className="spaced">
-          <div className="btn-group btn-group-block centered col-8">
-            <Link
-              to="/dashboard"
-              className="btn btn-lg btn-primary"
-              {...disabledButtonProps}
-            >
+          <Link
+            to="/dashboard"
+          >
+            <Button size={8} primary {...disabledButtonProps}>
               Continue
-            </Link>
-          </div>
-          <div className="btn-group btn-group-block centered col-8">
-            <Link to="/start" className="btn btn-lg btn-primary">
+            </Button>
+          </Link>
+          <Link to="/start">
+            <Button size={8} primary>
               Start
-            </Link>
-          </div>
-          <div className="btn-group btn-group-block centered col-8">
-            <button type="button" {...resetProps} onClick={this.resetData}>
-              Delete Save
-            </button>
-          </div>
+            </Button>
+          </Link>
+          <Button size={8} primary {...resetProps} onClick={this.resetData}>
+            Delete Save
+          </Button>
         </div>
         <br/>
         <div className="centered text-center">
-          <div className="parallax centered text-center width-190">
-            <div className="parallax-top-left"/>
-            <div className="parallax-top-right"/>
-            <div className="parallax-bottom-left"/>
-            <div className="parallax-bottom-right"/>
-            <div className="parallax-content">
-              <div className="parallax-front">
-              </div>
-              <div className="parallax-back">
-                <img src="https://www.newgrounds.com/img/misc/dl-official.gif" className="img-responsive rounded"/>
-              </div>
-            </div>
-          </div>
+          <Parallax className="width-190 centered">
+            <img src="https://www.newgrounds.com/img/misc/dl-official.gif" className="img-responsive rounded"/>
+          </Parallax>
           <br/>
           <div>
             <b>Programming:</b> <a href="https://fil1994.newgrounds.com/" target="_blank">FIL1994</a>
@@ -115,9 +101,9 @@ class MainMenu extends Component {
         {
           showToastDeleted
             ?
-              <div className="toast toast-bottom">
+              <Toast className="toast-bottom">
                 Save deleted
-              </div>
+              </Toast>
             :
               ''
         }

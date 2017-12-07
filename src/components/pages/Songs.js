@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 
 import $ from 'jquery';
 import _ from 'lodash';
-import {Page} from '../SpectreCSS';
+import {Page, Button, EmptyState} from '../SpectreCSS';
 import getRandomSongName from '../../data/randomSongName';
 import {getBand, getCash, saveCash, getSongs, writeSong, deleteSong, updateSong, getWeek, nextWeek} from '../../actions';
 import studios from '../../data/studios';
@@ -217,11 +217,11 @@ class Songs extends Component {
               <div className="form-group">
                 <div className="input-group col-9">
                   <input id="txtSongName" className="form-input" placeholder="Song Name" type="text"/>
-                  <button className="btn input-group-btn" type="button"
+                  <Button className="input-group-btn"
                     onClick={() => $('#txtSongName').val(getRandomSongName())}
                   >
                     Random
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -249,11 +249,11 @@ class Songs extends Component {
               <div className="form-group">
                 <div className="input-group">
                   <input id="txtNewSongName" className="form-input" type="text"/>
-                  <button className="btn input-group-btn" type="button"
+                  <Button className="input-group-btn"
                     onClick={() => $('#txtNewSongName').val(getRandomSongName())}
                   >
                     Random
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -353,12 +353,10 @@ class Songs extends Component {
 
   renderEmpty() {
     return (
-      <div className="empty">
-        <div className="empty-icon">
-          <i className="fa fa-music fa-4x"/>
-        </div>
-        <p className="empty-title h5">You haven't written any songs yet</p>
-      </div>
+      <EmptyState
+        icon={<i className="fa fa-music fa-4x"/>}
+        title="You haven't written any songs yet"
+      />
     );
   }
 
@@ -395,17 +393,15 @@ class Songs extends Component {
 
     if(songs.length < 1) {
       return (
-        <div className="empty">
-          <div className="empty-icon">
-            <i className="fa fa-pencil fa-4x"/>
-          </div>
-          <p className="empty-title h5">You don't have any unreleased songs</p>
-        </div>
+        <EmptyState
+          icon={<i className="fa fa-pencil fa-4x"/>}
+          title="You don't have any unreleased songs"
+        />
       );
     }
 
     return (
-      <table className="table table-striped table-hover text-center">
+      <table className="table table-striped table-hover text-center scrollable-table">
         <thead>
           <tr>
             <th className="c-hand" onClick={() => {this.handleSort('title')}}>
@@ -438,13 +434,6 @@ class Songs extends Component {
                   <td>{s.recording}</td>
                   <td>
                     <div className="btn-group">
-                      <a href="#modal-record-song" className="btn"
-                        onClick={() => {
-                          $('#selectStudio').data('id', s.id);
-                        }}
-                      >
-                        Record
-                      </a>
                       <a href="#modal-edit-song" className="btn"
                          onClick={() => {
                            let txtNewSongName = $('#txtNewSongName');
@@ -453,7 +442,14 @@ class Songs extends Component {
                          }}>
                         Edit
                       </a>
-                      <button className="btn" onClick={() => this.props.deleteSong(s.id)}>Delete</button>
+                      <Button onClick={() => this.props.deleteSong(s.id)}>Delete</Button>
+                      <a href="#modal-record-song" className="btn"
+                         onClick={() => {
+                           $('#selectStudio').data('id', s.id);
+                         }}
+                      >
+                        Record
+                      </a>
                     </div>
                   </td>
                 </tr>
@@ -472,9 +468,11 @@ class Songs extends Component {
     return(
       <Page id="page-songs">
         <div className="centered text-center">
-          <div className="btn-group btn-group-block centered col-2">
-            <a href="#modal-write-song" className="btn btn-lg btn-primary">
-              Write Song
+          <div className="columns">
+            <a href="#modal-write-song" className="column col-4 col-mx-auto">
+              <Button block primary large>
+                Write Song
+              </Button>
             </a>
           </div>
           {this.renderModalWriteSong()}
@@ -488,8 +486,7 @@ class Songs extends Component {
           :
             <div className="col-12 centered">
               <p className="text-left">Unreleased Songs: {usableSongs.length}</p>
-              <br/>
-              <div className="scrollable">
+              <div /*className="scrollable"*/>
                 {this.renderSongList()}
               </div>
             </div>

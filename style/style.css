@@ -20,7 +20,7 @@ body {
     margin-right: 8px;
 }
 
-.spaced div{
+.spaced button{
     margin-bottom: 5px;
 }
 
@@ -41,6 +41,22 @@ body {
 
 .scrollable.start {
     height: 530px;
+}
+
+.scrollable-table tbody {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 400px;
+}
+
+.scrollable-table thead {
+    display: block;
+}
+
+.scrollable-table td, .scrollable-table th {
+    text-align: center;
+    width: 1%;
 }
 
 .full-width {

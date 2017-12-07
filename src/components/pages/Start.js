@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import $ from 'jquery';
 import _ from 'lodash';
-import {Page} from '../SpectreCSS';
+import {Page, Button, Divider} from '../SpectreCSS';
 
 import INSTRUMENTS from '../../data/instruments';
 import getRandomBandName from '../../data/randomBandName';
@@ -127,7 +127,7 @@ class Start extends Component {
             <strong className="text-capitalize">{`${skill}: `}</strong>
           </div>,
           <div key={`${index}B`} className="col-6">
-            <button className="btn btn-action" type="button" {...btnMinusProps}
+            <Button className="btn-action" {...btnMinusProps}
               onClick={() => {
                 if(skills[skill] > 0) {
                   let newSkills = _.cloneDeep(skills);
@@ -144,9 +144,9 @@ class Start extends Component {
               }}
             >
               <i className="icon icon-minus"/>
-            </button>
+            </Button>
             <span className="skill-number">{skills[skill]}</span>
-            <button className="btn btn-action" type="button" {...btnPlusProps}
+            <Button className="btn-action" {...btnPlusProps}
               onClick={() => {
                 if(points > 0) {
                   let newSkills = _.cloneDeep(skills);
@@ -163,7 +163,7 @@ class Start extends Component {
               }}
             >
               <i className="icon icon-plus"/>
-            </button>
+            </Button>
           </div>
         ];
       });
@@ -182,22 +182,22 @@ class Start extends Component {
               <div className={`col-10 ${!_.isEmpty(error.bandName) ? 'has-error' : null}`}>
                 <div className="input-group">
                   <input className="form-input input-lg" type="text" id="txtBandName" placeholder="Band Name"/>
-                  <button
-                    type="button"
-                    className="btn btn-lg input-group-btn"
+                  <Button
+                    large
+                    className="input-group-btn"
                     onClick={() => $('#txtBandName').val(getRandomBandName())}
                   >
                     Random
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
             <div className="text-center">
               <p className="is-error">{error.bandName}</p>
             </div>
-            <button type="submit" className="btn btn-primary btn-lg centered">
+            <Button type="submit" large primary centered>
               Next
-            </button>
+            </Button>
           </form>
         );
       case 1:
@@ -212,13 +212,13 @@ class Start extends Component {
               <div className={`col-10 ${!_.isEmpty(error.yourName) ? 'has-error' : null}`}>
                 <div className="input-group">
                   <input className="form-input input-lg" type="text" id="txtYourName" placeholder="Your Name"/>
-                  <button
-                    type="button"
-                    className="btn btn-lg input-group-btn"
+                  <Button
+                    large
+                    className="input-group-btn"
                     onClick={() => $('#txtYourName').val(getRandomName())}
                   >
                     Random
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -262,9 +262,9 @@ class Start extends Component {
               <p className="is-error">{error.points}</p>
             </div>
             <br/>
-            <button type="submit" className="btn btn-primary btn-lg centered">
+            <Button type="submit" large primary centered>
               Next
-            </button>
+            </Button>
           </form>
         );
       case 2:
@@ -375,9 +375,9 @@ class Start extends Component {
               {instrument === INSTRUMENTS.DRUMS ? null : radioDrums}
             </div>
             <br/>
-            <button type="submit" className="btn btn-primary btn-lg centered">
+            <Button type="submit" primary large centered>
               Next
-            </button>
+            </Button>
           </form>
         );
     }
@@ -562,7 +562,7 @@ class Start extends Component {
         <div className="panel scrollable start">
           <div className="centered col-10 panel-body">
             {this.renderSteps()}
-            <div className="divider"/>
+            <Divider/>
             <br/>
             {this.renderForm()}
           </div>

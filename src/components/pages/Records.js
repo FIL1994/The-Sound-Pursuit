@@ -2,11 +2,11 @@
  * @author Philip Van Raalte
  * @date 2017-10-17.
  */
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import _ from 'lodash';
-import {Page} from '../SpectreCSS';
+import {Page, EmptyState, Button} from '../SpectreCSS';
 
 import {getSongs, getSingles, getAlbums, getWeek} from '../../actions';
 
@@ -44,8 +44,8 @@ class Records extends Component {
         {`Singles `}
         <label className="form-switch">
           <input type="checkbox"
-                 onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
-                 checked={showAlbums}
+             onChange={(e) => {this.setState({showAlbums: e.target.checked})}}
+             checked={showAlbums}
           />
           <i className="form-icon"/> Albums
         </label>
@@ -61,12 +61,10 @@ class Records extends Component {
 
     if(_.isEmpty(singles)){
       return (
-        <div className="empty">
-          <div className="empty-icon">
-            <i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>
-          </div>
-          <p className="empty-title h5">You haven't released any singles yet</p>
-        </div>
+        <EmptyState
+          icon={<i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>}
+          title="You haven't released any singles yet"
+        />
       );
     }
 
@@ -119,12 +117,10 @@ class Records extends Component {
 
     if(_.isEmpty(albums)){
       return (
-        <div className="empty">
-          <div className="empty-icon">
-            <i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>
-          </div>
-          <p className="empty-title h5">You haven't released any albums yet</p>
-        </div>
+        <EmptyState
+          icon={<i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>}
+          title="You haven't released any albums yet"
+        />
       );
     }
 
@@ -172,11 +168,17 @@ class Records extends Component {
     const {showAlbums} = this.state;
     const {singles, albums} = this.props;
 
+    if(!showAlbums && _.isEmpty(singles)) {
+      setTimeout(() => this.setState({showAlbums: true}));
+    }
+
     return(
       <Page id="page-records">
-        <div className="btn-group btn-group-block centered col-2">
-          <Link to="/records/release" className="btn btn-lg btn-primary">
-            Release New Record
+        <div className="columns">
+          <Link to="/records/release" className="column col-4 col-mx-auto">
+            <Button primary block large>
+              Release New Record
+            </Button>
           </Link>
         </div>
         <br/>
@@ -184,12 +186,10 @@ class Records extends Component {
           {
             _.isEmpty(singles) && _.isEmpty(albums)
             ?
-              <div className="empty">
-                <div className="empty-icon">
-                  <i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>
-                </div>
-                <p className="empty-title h5">You haven't released any records yet</p>
-              </div>
+              <EmptyState
+                icon={<i className="fa fa-file-audio-o fa-4x" aria-hidden="true"/>}
+                title="You haven't released any records yet"
+              />
             :
               <div>
                 {
