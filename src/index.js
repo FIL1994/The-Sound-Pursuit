@@ -8,6 +8,7 @@ import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import ReduxThunk from 'redux-thunk';
 import {startSession, getDateTime, initSession} from './ng/NG_Connect';
+import {NG} from './ng/UnlockMedals';
 
 import App from './App';
 import reducers from './reducers';
@@ -22,5 +23,8 @@ ReactDOM.render(
 
 // NG Start Session
 initSession();
-startSession();
+startSession(() => {
+  NG.fetchedUser = true;
+  NG.executeQueue();
+});
 getDateTime();

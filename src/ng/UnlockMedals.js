@@ -8,7 +8,22 @@ import {unlockMedal, getMedals, getUser} from './NG_Connect';
 const medalTimeoutShort = 350;
 const medalTimeoutLong = 2000;
 
-function forceUnlockMedal(medalName) {
+export class NG {
+  static fetchedUser = false;
+  static unlockQueue = [];
+  static executeQueue() {
+    Promise.all(NG.unlockQueue.map((uq) => new Promise(uq)))
+      .then(() => console.log("UnlockMedal Queue Executed"));
+  }
+}
+
+async function forceUnlockMedal(medalName) {
+  // if user isn't fetched yet, queue unlocking the medal
+  if(!NG.fetchedUser) {
+    NG.unlockQueue.push(() => forceUnlockMedal(medalName));
+    return;
+  }
+
   if(!_.isString(medalName)) {
     return;
   }

@@ -16,9 +16,15 @@ export function startSession() {
   ngio.callComponent("App.startSession", {}, (result) => {
     ngio.queueComponent("Medal.getList", {}, onMedalsLoaded);
     ngio.queueComponent("ScoreBoard.getBoards", {}, onScoreboardsLoaded);
+
+    if(_.isFunction(afterSessionStarted)) {
+      ngio.queueComponent("Gateway.getDatetime", {}, afterSessionStarted);
+    }
+
     ngio.executeQueue();
     sessionStarted = true;
     afterSessionStart(result);
+
   }, this);
 }
 
