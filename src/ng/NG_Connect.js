@@ -12,7 +12,7 @@ let medals = [], scoreboards = [], sessionStarted = false, medalsLoaded = false;
 const afterSessionStart = (result) => {console.log("Session has started", result);};
 const afterMedalsLoaded = () => {console.log("Medals loaded", medals);};
 
-export function startSession() {
+export function startSession(afterSessionStarted) {
   ngio.callComponent("App.startSession", {}, (result) => {
     ngio.queueComponent("Medal.getList", {}, onMedalsLoaded);
     ngio.queueComponent("ScoreBoard.getBoards", {}, onScoreboardsLoaded);
